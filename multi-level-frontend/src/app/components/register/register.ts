@@ -9,7 +9,7 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-register',
- imports: [CommonModule, ReactiveFormsModule],
+ imports: [CommonModule, ReactiveFormsModule,RouterLink],
   templateUrl: './register.html',
   styleUrl: './register.scss',
 })
