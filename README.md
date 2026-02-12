@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🚀 Multi-Level User Management System
 
 A complete **MEAN stack application** with **N-level user hierarchy, balance transfer, and admin controls**.
@@ -176,3 +177,6 @@ GET  /api/balance/statement
 GET  /api/admin/users
 POST /api/admin/credit
 POST /api/admin/debit
+=======
+# multi-level-user-system
+>>>>>>> 0e549fc336e65f4cb1c26c3c46801cb26fa47cab
