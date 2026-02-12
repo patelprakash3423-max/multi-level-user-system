@@ -1,0 +1,365 @@
+<div class="create-user-container">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <!-- Header Card -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-success text-white py-3">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-person-plus-fill fs-1 me-3"></i>
+            <div>
+              <h2 class="mb-0 fw-bold">Create Next Level User</h2>
+              <p class="mb-0 opacity-75">
+                Add a new user to your downline at Level {{ getNextLevel() }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Form Card -->
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-4 p-lg-5">
+          <!-- User Info Alert -->
+          <div class="alert alert-info d-flex align-items-center mb-4" role="alert">
+            <i class="bi bi-info-circle-fill fs-4 me-3"></i>
+            <div>
+              <strong>Creating as:</strong> {{ currentUser?.username }} ({{ currentUser?.role | titlecase }}) 
+              <span class="badge bg-primary ms-2">Level {{ currentUser?.level }}</span>
+              <br>
+              <small class="text-muted">
+                New user will be placed at Level {{ getNextLevel() }} under your direct downline
+              </small>
+            </div>
+          </div>
+
+          <!-- Balance Warning (if applicable) -->
+          <div *ngIf="currentUser?.role === 'user' && getCurrentBalance() < 0" class="alert alert-warning d-flex align-items-center mb-4">
+            <i class="bi bi-exclamation-triangle-fill fs-4 me-3"></i>
+            <div>
+              <strong>Low Balance Warning:</strong> You need sufficient balance to transfer funds to this user after creation.
+              <br>
+              <small>Current balance: {{ formatCurrency(getCurrentBalance()) }}</small>
+            </div>
+          </div>
+
+          <!-- Creation Form -->
+          <form [formGroup]="createUserForm" (ngSubmit)="onSubmit()">
+            <div class="row">
+              <!-- Left Column -->
+              <div class="col-md-6">
+                <h5 class="mb-3 fw-semibold">
+                  <i class="bi bi-person-badge me-2 text-success"></i>
+                  Account Information
+                </h5>
+
+                <!-- Username Field -->
+                <div class="mb-4">
+                  <label for="username" class="form-label fw-semibold">
+                    <i class="bi bi-at me-1"></i> Username
+                    <span class="text-danger">*</span>
+                  </label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light">
+                      <i class="bi bi-person"></i>
+                    </span>
+                    <input
+                      type="text"
+                      id="username"
+                      formControlName="username"
+                      class="form-control form-control-lg"
+                      placeholder="Choose a username"
+                      [class.is-invalid]="createUserForm.get('username')?.invalid && createUserForm.get('username')?.touched"
+                      (blur)="suggestUsername()"
+                    >
+                  </div>
+                  <div *ngIf="createUserForm.get('username')?.invalid && createUserForm.get('username')?.touched" 
+                       class="invalid-feedback d-block">
+                    {{ getErrorMessage('username') }}
+                  </div>
+                  <small class="form-text text-muted">
+                    <i class="bi bi-info-circle me-1"></i>
+                    3-20 characters, letters, numbers, and underscores only
+                  </small>
+                </div>
+
+                <!-- Email Field -->
+                <div class="mb-4">
+                  <label for="email" class="form-label fw-semibold">
+                    <i class="bi bi-envelope me-1"></i> Email Address
+                    <span class="text-danger">*</span>
+                  </label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light">
+                      <i class="bi bi-envelope-fill"></i>
+                    </span>
+                    <input
+                      type="email"
+                      id="email"
+                      formControlName="email"
+                      class="form-control form-control-lg"
+                      placeholder="Enter email address"
+                      [class.is-invalid]="createUserForm.get('email')?.invalid && createUserForm.get('email')?.touched"
+                    >
+                  </div>
+                  <div *ngIf="createUserForm.get('email')?.invalid && createUserForm.get('email')?.touched" 
+                       class="invalid-feedback d-block">
+                    {{ getErrorMessage('email') }}
+                  </div>
+                </div>
+
+                <!-- Level Info -->
+                <div class="level-info-card bg-light p-3 rounded-3 mb-4">
+                  <div class="d-flex align-items-center">
+                    <div class="level-icon bg-success bg-opacity-10 p-3 rounded-3 me-3">
+                      <i class="bi bi-ladder fs-2 text-success"></i>
+                    </div>
+                    <div>
+                      <small class="text-muted d-block">User Level</small>
+                      <h4 class="mb-0 fw-bold">Level {{ getNextLevel() }}</h4>
+                      <small class="text-success">
+                        <i class="bi bi-arrow-down-circle me-1"></i>
+                        Direct downline of {{ currentUser?.username }}
+                      </small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Column -->
+              <div class="col-md-6">
+                <h5 class="mb-3 fw-semibold">
+                  <i class="bi bi-shield-lock me-2 text-success"></i>
+                  Security Settings
+                </h5>
+
+                <!-- Password Field -->
+                <div class="mb-4">
+                  <label for="password" class="form-label fw-semibold">
+                    <i class="bi bi-key me-1"></i> Password
+                    <span class="text-danger">*</span>
+                  </label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light">
+                      <i class="bi bi-shield-lock"></i>
+                    </span>
+                    <input
+                      [type]="showPassword ? 'text' : 'password'"
+                      id="password"
+                      formControlName="password"
+                      class="form-control form-control-lg"
+                      placeholder="Create a password"
+                      [class.is-invalid]="(createUserForm.get('password')?.invalid || createUserForm.errors?.['passwordMismatch']) && createUserForm.get('password')?.touched"
+                    >
+                    <button
+                      class="btn btn-outline-secondary"
+                      type="button"
+                      (click)="togglePasswordVisibility()"
+                    >
+                      <i class="bi" [class.bi-eye]="!showPassword" [class.bi-eye-slash]="showPassword"></i>
+                    </button>
+                  </div>
+                  
+                  <!-- Password Strength Meter -->
+                  <div *ngIf="createUserForm.get('password')?.value" class="mt-2">
+                    <div class="d-flex justify-content-between mb-1">
+                      <span class="small">Password Strength:</span>
+                      <span class="small fw-bold" [ngClass]="{
+                        'text-danger': passwordStrength.score <= 2,
+                        'text-warning': passwordStrength.score === 3,
+                        'text-info': passwordStrength.score === 4,
+                        'text-success': passwordStrength.score === 5
+                      }">
+                        {{ getPasswordStrengthLabel() }}
+                      </span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                      <div 
+                        class="progress-bar" 
+                        [ngClass]="getPasswordStrengthColor()"
+                        [style.width.%]="(passwordStrength.score / 5) * 100"
+                        role="progressbar">
+                      </div>
+                    </div>
+                    
+                    <!-- Password Requirements -->
+                    <div class="password-requirements mt-2 p-2 bg-light rounded-3">
+                      <div class="row g-1 small">
+                        <div class="col-6">
+                          <span [class.text-success]="passwordStrength.hasLength" [class.text-danger]="!passwordStrength.hasLength">
+                            <i class="bi" [class.bi-check-circle-fill]="passwordStrength.hasLength" [class.bi-x-circle-fill]="!passwordStrength.hasLength"></i>
+                            8+ characters
+                          </span>
+                        </div>
+                        <div class="col-6">
+                          <span [class.text-success]="passwordStrength.hasUpperCase" [class.text-danger]="!passwordStrength.hasUpperCase">
+                            <i class="bi" [class.bi-check-circle-fill]="passwordStrength.hasUpperCase" [class.bi-x-circle-fill]="!passwordStrength.hasUpperCase"></i>
+                            Uppercase
+                          </span>
+                        </div>
+                        <div class="col-6">
+                          <span [class.text-success]="passwordStrength.hasLowerCase" [class.text-danger]="!passwordStrength.hasLowerCase">
+                            <i class="bi" [class.bi-check-circle-fill]="passwordStrength.hasLowerCase" [class.bi-x-circle-fill]="!passwordStrength.hasLowerCase"></i>
+                            Lowercase
+                          </span>
+                        </div>
+                        <div class="col-6">
+                          <span [class.text-success]="passwordStrength.hasNumber" [class.text-danger]="!passwordStrength.hasNumber">
+                            <i class="bi" [class.bi-check-circle-fill]="passwordStrength.hasNumber" [class.bi-x-circle-fill]="!passwordStrength.hasNumber"></i>
+                            Number
+                          </span>
+                        </div>
+                        <div class="col-6">
+                          <span [class.text-success]="passwordStrength.hasSpecialChar" [class.text-danger]="!passwordStrength.hasSpecialChar">
+                            <i class="bi" [class.bi-check-circle-fill]="passwordStrength.hasSpecialChar" [class.bi-x-circle-fill]="!passwordStrength.hasSpecialChar"></i>
+                            Special char
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div *ngIf="createUserForm.get('password')?.errors?.['pattern'] && createUserForm.get('password')?.touched" 
+                       class="text-danger small mt-1">
+                    {{ getErrorMessage('password') }}
+                  </div>
+                </div>
+
+                <!-- Confirm Password Field -->
+                <div class="mb-4">
+                  <label for="confirmPassword" class="form-label fw-semibold">
+                    <i class="bi bi-key-fill me-1"></i> Confirm Password
+                    <span class="text-danger">*</span>
+                  </label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light">
+                      <i class="bi bi-shield-check"></i>
+                    </span>
+                    <input
+                      [type]="showConfirmPassword ? 'text' : 'password'"
+                      id="confirmPassword"
+                      formControlName="confirmPassword"
+                      class="form-control form-control-lg"
+                      placeholder="Confirm password"
+                      [class.is-invalid]="createUserForm.get('confirmPassword')?.invalid && createUserForm.get('confirmPassword')?.touched || createUserForm.errors?.['passwordMismatch']"
+                    >
+                    <button
+                      class="btn btn-outline-secondary"
+                      type="button"
+                      (click)="toggleConfirmPasswordVisibility()"
+                    >
+                      <i class="bi" [class.bi-eye]="!showConfirmPassword" [class.bi-eye-slash]="showConfirmPassword"></i>
+                    </button>
+                  </div>
+                  <div *ngIf="createUserForm.get('confirmPassword')?.touched">
+                    <div *ngIf="createUserForm.get('confirmPassword')?.errors?.['required']" 
+                         class="invalid-feedback d-block">
+                      Please confirm the password
+                    </div>
+                    <div *ngIf="createUserForm.errors?.['passwordMismatch']" 
+                         class="invalid-feedback d-block">
+                      Passwords do not match
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Quick Tips -->
+                <div class="tips-card bg-info bg-opacity-10 p-3 rounded-3">
+                  <h6 class="fw-semibold mb-2">
+                    <i class="bi bi-lightbulb text-info me-2"></i>
+                    Quick Tips
+                  </h6>
+                  <ul class="small mb-0 ps-3">
+                    <li class="mb-1">You can transfer balance to this user after creation</li>
+                    <li class="mb-1">You can change their password anytime</li>
+                    <li class="mb-1">They will appear in your downline network</li>
+                    <li>They can create their own downline users</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="d-flex justify-content-between align-items-center mt-5 pt-3 border-top">
+              <button 
+                type="button" 
+                class="btn btn-outline-secondary btn-lg"
+                routerLink="/downline">
+                <i class="bi bi-arrow-left me-2"></i>
+                Cancel
+              </button>
+              
+              <div class="d-flex gap-2">
+                <button 
+                  type="button" 
+                  class="btn btn-outline-secondary"
+                  (click)="createUserForm.reset()">
+                  <i class="bi bi-eraser me-2"></i>
+                  Reset
+                </button>
+                
+                <button
+                  type="submit"
+                  class="btn btn-success btn-lg px-5"
+                  [disabled]="createUserForm.invalid || isLoading">
+                  <span *ngIf="!isLoading">
+                    <i class="bi bi-person-plus me-2"></i>
+                    Create User
+                  </span>
+                  <span *ngIf="isLoading">
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                    Creating...
+                  </span>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Information Cards -->
+      <div class="row mt-4">
+        <div class="col-md-4 mb-3">
+          <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body text-center p-4">
+              <div class="info-icon bg-success bg-opacity-10 rounded-circle p-3 mx-auto mb-3" style="width: 70px; height: 70px;">
+                <i class="bi bi-diagram-3 fs-1 text-success"></i>
+              </div>
+              <h5 class="fw-semibold">Network Growth</h5>
+              <p class="text-muted small">
+                Each new user expands your network and increases your potential earnings.
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-4 mb-3">
+          <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body text-center p-4">
+              <div class="info-icon bg-warning bg-opacity-10 rounded-circle p-3 mx-auto mb-3" style="width: 70px; height: 70px;">
+                <i class="bi bi-cash-stack fs-1 text-warning"></i>
+              </div>
+              <h5 class="fw-semibold">Balance Transfers</h5>
+              <p class="text-muted small">
+                You can transfer funds to your direct downline users to help them get started.
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-4 mb-3">
+          <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body text-center p-4">
+              <div class="info-icon bg-info bg-opacity-10 rounded-circle p-3 mx-auto mb-3" style="width: 70px; height: 70px;">
+                <i class="bi bi-shield-check fs-1 text-info"></i>
+              </div>
+              <h5 class="fw-semibold">Full Control</h5>
+              <p class="text-muted small">
+                You have full management control over users in your direct downline.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

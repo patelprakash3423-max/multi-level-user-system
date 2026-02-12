@@ -1,0 +1,479 @@
+.profile-container {
+  padding: 24px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  min-height: calc(100vh - 76px);
+  
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
+}
+
+// Header Styles
+.bg-gradient-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+// Profile Avatar
+.profile-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  
+  &.bg-primary-subtle {
+    background: linear-gradient(135deg, rgba(13, 110, 253, 0.1), rgba(13, 110, 253, 0.2));
+    color: #0d6efd;
+  }
+  
+  &.bg-success-subtle {
+    background: linear-gradient(135deg, rgba(25, 135, 84, 0.1), rgba(25, 135, 84, 0.2));
+    color: #198754;
+  }
+  
+  &.bg-info-subtle {
+    background: linear-gradient(135deg, rgba(13, 202, 240, 0.1), rgba(13, 202, 240, 0.2));
+    color: #0dcaf0;
+  }
+  
+  &.bg-warning-subtle {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 193, 7, 0.2));
+    color: #ffc107;
+  }
+  
+  &.bg-danger-subtle {
+    background: linear-gradient(135deg, rgba(220, 53, 69, 0.1), rgba(220, 53, 69, 0.2));
+    color: #dc3545;
+  }
+  
+  &.bg-secondary-subtle {
+    background: linear-gradient(135deg, rgba(108, 117, 125, 0.1), rgba(108, 117, 125, 0.2));
+    color: #6c757d;
+  }
+  
+  .avatar-text {
+    font-size: 48px;
+    font-weight: 600;
+  }
+  
+  .avatar-upload {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    
+    .avatar-upload-label {
+      width: 32px;
+      height: 32px;
+      background: #667eea;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        transform: scale(1.1);
+        background: #764ba2;
+      }
+      
+      i {
+        font-size: 16px;
+      }
+    }
+  }
+}
+
+// Stat Cards
+.stat-card {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.stat-card-small {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  }
+}
+
+// Membership Info
+.membership-info {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+}
+
+// Navigation Tabs
+.nav-tabs {
+  border-bottom: 1px solid #e9ecef;
+  
+  .nav-item {
+    margin-bottom: -1px;
+  }
+  
+  .nav-link {
+    border: none;
+    padding: 16px 24px;
+    color: #6c757d;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      color: #667eea;
+      background: rgba(102, 126, 234, 0.05);
+    }
+    
+    &.active {
+      color: #667eea;
+      background: transparent;
+      border-bottom: 3px solid #667eea;
+    }
+    
+    i {
+      font-size: 18px;
+    }
+  }
+}
+
+// Form Styles
+.form-control, .form-select {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 10px 12px;
+  transition: all 0.2s ease;
+  
+  &:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+  }
+  
+  &:disabled, &[readonly] {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+  }
+}
+
+.form-check-input {
+  width: 1.2em;
+  height: 1.2em;
+  margin-top: 0.15em;
+  border-color: #dee2e6;
+  
+  &:checked {
+    background-color: #667eea;
+    border-color: #667eea;
+  }
+  
+  &:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+  }
+}
+
+.form-switch {
+  .form-check-input {
+    width: 2.5em;
+    height: 1.25em;
+    margin-top: 0.1em;
+    
+    &:checked {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
+    }
+  }
+}
+
+// Password Requirements
+.password-requirements {
+  background: #f8f9fa;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  
+  span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    
+    i {
+      font-size: 12px;
+    }
+  }
+}
+
+// Progress Bar
+.progress {
+  background-color: #e9ecef;
+  border-radius: 10px;
+  
+  .progress-bar {
+    transition: width 0.3s ease;
+    
+    &.bg-danger {
+      background: linear-gradient(90deg, #dc3545, #ff6b6b);
+    }
+    
+    &.bg-warning {
+      background: linear-gradient(90deg, #ffc107, #ffd658);
+    }
+    
+    &.bg-info {
+      background: linear-gradient(90deg, #17a2b8, #6ed4ff);
+    }
+    
+    &.bg-success {
+      background: linear-gradient(90deg, #28a745, #5cb85c);
+    }
+  }
+}
+
+// Security Sections
+.security-section {
+  .bg-light {
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background: #ffffff !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+  }
+}
+
+.password-change-form {
+  animation: slideDown 0.3s ease;
+}
+
+// Transaction Items
+.transaction-item {
+  transition: all 0.2s ease;
+  
+  &:hover {
+    transform: translateX(5px);
+    background: #ffffff !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  .transaction-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    &.bg-success-subtle {
+      background: rgba(40, 167, 69, 0.1);
+    }
+    
+    &.bg-danger-subtle {
+      background: rgba(220, 53, 69, 0.1);
+    }
+    
+    &.bg-warning-subtle {
+      background: rgba(255, 193, 7, 0.1);
+    }
+    
+    &.bg-info-subtle {
+      background: rgba(23, 162, 184, 0.1);
+    }
+  }
+}
+
+// Danger Zone
+.danger-zone {
+  .bg-light {
+    border-left: 4px solid #dc3545;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background: #fff5f5 !important;
+    }
+  }
+}
+
+// Animations
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card, .profile-avatar, .stat-card {
+  animation: fadeIn 0.5s ease;
+}
+
+// Responsive
+@media (max-width: 992px) {
+  .nav-tabs {
+    .nav-link {
+      padding: 12px 16px;
+      
+      i {
+        font-size: 16px;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 16px;
+  }
+  
+  .profile-avatar {
+    width: 100px;
+    height: 100px;
+    
+    .avatar-text {
+      font-size: 40px;
+    }
+  }
+  
+  .nav-tabs {
+    .nav-link {
+      padding: 10px 12px;
+      font-size: 14px;
+      
+      i {
+        margin-right: 4px;
+      }
+    }
+  }
+  
+  .stat-card-small {
+    .fs-4 {
+      font-size: 18px !important;
+    }
+  }
+  
+  .transaction-item {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 12px;
+    
+    .text-end {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+}
+
+// Loading Spinner
+.spinner-border {
+  width: 4rem;
+  height: 4rem;
+  border-width: 0.25rem;
+}
+
+// Invalid Feedback
+.invalid-feedback {
+  display: block;
+  font-size: 12px;
+  margin-top: 4px;
+  color: #dc3545;
+}
+
+.is-invalid {
+  border-color: #dc3545;
+  
+  &:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+  }
+}
+
+// Dark Mode Support
+@media (prefers-color-scheme: dark) {
+  .profile-container {
+    background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+  }
+  
+  .card {
+    background: #2d2d2d;
+    color: #f8f9fa;
+    
+    .card-header {
+      background: #1a1a1a;
+      color: #f8f9fa;
+    }
+  }
+  
+  .bg-light {
+    background: #1a1a1a !important;
+  }
+  
+  .text-muted {
+    color: #adb5bd !important;
+  }
+  
+  .form-control, .form-select {
+    background: #1a1a1a;
+    border-color: #404040;
+    color: #f8f9fa;
+    
+    &:focus {
+      background: #1a1a1a;
+      color: #f8f9fa;
+    }
+    
+    &:disabled, &[readonly] {
+      background: #2d2d2d;
+      border-color: #404040;
+    }
+  }
+  
+  .nav-tabs {
+    border-bottom-color: #404040;
+    
+    .nav-link {
+      color: #adb5bd;
+      
+      &:hover {
+        background: rgba(102, 126, 234, 0.1);
+      }
+      
+      &.active {
+        color: #667eea;
+      }
+    }
+  }
+  
+  .transaction-item {
+    &:hover {
+      background: #1a1a1a !important;
+    }
+  }
+  
+  .password-requirements {
+    background: #1a1a1a;
+  }
+}

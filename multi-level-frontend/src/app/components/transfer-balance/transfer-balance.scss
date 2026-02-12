@@ -1,0 +1,395 @@
+.transfer-container {
+  padding: 20px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+  min-height: calc(100vh - 76px);
+}
+
+// Card Styles
+.card {
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  .card-header {
+    border-bottom: none;
+    
+    &.bg-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    }
+  }
+}
+
+// Balance Card
+.balance-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: scale(1.1);
+  }
+}
+
+.daily-limit-card {
+  background: linear-gradient(135deg, #f8f9fa, #ffffff);
+  border-left: 4px solid #ffc107;
+  
+  .progress {
+    background-color: #e9ecef;
+    border-radius: 10px;
+    
+    .progress-bar {
+      background: linear-gradient(90deg, #ffc107, #ffd658);
+      transition: width 0.3s ease;
+    }
+  }
+}
+
+// Form Styles
+.form-control, .input-group-text {
+  border: 1px solid #e0e0e0;
+  transition: all 0.2s ease;
+  
+  &:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+  }
+}
+
+.form-control-lg {
+  padding: 12px 16px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.input-group-text {
+  background-color: #f8f9fa;
+  border-right: none;
+  
+  + .form-control {
+    border-left: none;
+    
+    &:focus {
+      border-left: none;
+    }
+  }
+}
+
+// Search Results
+.search-results {
+  max-height: 300px;
+  overflow-y: auto;
+  border-radius: 8px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  
+  .list-group-item {
+    border: none;
+    padding: 12px 16px;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background-color: rgba(102, 126, 234, 0.05);
+      
+      .user-avatar {
+        background-color: rgba(102, 126, 234, 0.2) !important;
+        
+        i {
+          color: #667eea;
+        }
+      }
+    }
+  }
+}
+
+// Selected User Card
+.selected-user-card {
+  background: linear-gradient(135deg, #f0f9f0, #ffffff);
+  border-left: 4px solid #28a745;
+  animation: slideIn 0.3s ease;
+  
+  .user-avatar {
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: rotate(5deg);
+    }
+  }
+}
+
+// Quick Amount Buttons
+.quick-amounts {
+  .btn-outline-secondary {
+    border-color: #dee2e6;
+    color: #495057;
+    
+    &:hover {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-color: transparent;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+    }
+    
+    &:disabled {
+      opacity: 0.5;
+      transform: none;
+      box-shadow: none;
+    }
+  }
+}
+
+// Transfer Summary
+.transfer-summary {
+  background: linear-gradient(135deg, #f8f9fa, #ffffff);
+  border-left: 4px solid #667eea;
+  animation: slideIn 0.3s ease;
+  
+  .border-top {
+    border-color: rgba(0, 0, 0, 0.1) !important;
+  }
+}
+
+// Recent Transactions
+.transaction-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: rotate(15deg);
+  }
+}
+
+.list-group-item {
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: rgba(102, 126, 234, 0.02);
+  }
+}
+
+// Tips Card
+.bi-check-circle-fill {
+  font-size: 16px;
+}
+
+// Quick Stats
+.badge {
+  padding: 6px 12px;
+  font-weight: 500;
+}
+
+// Animations
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card {
+  animation: fadeIn 0.4s ease-out;
+}
+
+// Success Animation
+.success-animation {
+  i {
+    animation: scaleIn 0.3s ease;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+// Responsive Design
+@media (max-width: 992px) {
+  .transfer-container {
+    padding: 15px;
+  }
+  
+  .col-lg-8, .col-lg-4 {
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .transfer-container {
+    padding: 10px;
+  }
+  
+  .card-body {
+    padding: 1.5rem !important;
+  }
+  
+  .btn-lg {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+  
+  .d-flex.justify-content-between {
+    flex-direction: column;
+    gap: 15px;
+    
+    .btn {
+      width: 100%;
+    }
+  }
+  
+  .quick-amounts {
+    .d-flex {
+      flex-wrap: wrap;
+      
+      .btn {
+        flex: 1 1 calc(50% - 5px);
+      }
+    }
+  }
+  
+  .balance-icon {
+    width: 60px;
+    height: 60px;
+    
+    i {
+      font-size: 24px !important;
+    }
+  }
+  
+  h2 {
+    font-size: 24px;
+  }
+}
+
+// Loading Spinner
+.spinner-border {
+  width: 1.2rem;
+  height: 1.2rem;
+  border-width: 2px;
+}
+
+// Custom Scrollbar for Search Results
+.search-results::-webkit-scrollbar {
+  width: 6px;
+}
+
+.search-results::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.search-results::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 10px;
+  
+  &:hover {
+    background: #a1a1a1;
+  }
+}
+
+// Validation Styles
+.invalid-feedback {
+  display: block;
+  font-size: 12px;
+  margin-top: 4px;
+  color: #dc3545;
+}
+
+.is-invalid {
+  border-color: #dc3545;
+  
+  &:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+  }
+}
+
+// Form Labels
+.form-label {
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: #495057;
+  
+  .text-danger {
+    font-size: 16px;
+  }
+}
+
+// Hover Effects
+.btn-outline-secondary {
+  &:hover {
+    i {
+      transform: scale(1.1);
+    }
+  }
+}
+
+// Status Badges
+.badge {
+  &.bg-success {
+    background: linear-gradient(135deg, #28a745, #20c997) !important;
+  }
+  
+  &.bg-warning {
+    background: linear-gradient(135deg, #ffc107, #fd7e14) !important;
+  }
+  
+  &.bg-danger {
+    background: linear-gradient(135deg, #dc3545, #c82333) !important;
+  }
+  
+  &.bg-info {
+    background: linear-gradient(135deg, #17a2b8, #138496) !important;
+  }
+}
+
+// Amount Input
+input[type="number"] {
+  appearance: textfield;     // add this
+  -moz-appearance: textfield;
+}
+
+
+// Focus States
+.form-control:focus,
+.btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+// Disabled States
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  
+  &:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}

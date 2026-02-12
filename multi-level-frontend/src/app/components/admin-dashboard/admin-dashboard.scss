@@ -1,0 +1,405 @@
+.admin-dashboard-container {
+  padding: 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: calc(100vh - 76px);
+  
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
+}
+
+// Header Styles
+.bg-gradient-admin {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+// Stat Cards
+.stat-card {
+  border-radius: 16px;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15) !important;
+  }
+  
+  .stat-icon {
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: scale(1.1) rotate(5deg);
+    }
+  }
+}
+
+// Custom Colors
+.bg-purple {
+  background-color: #6f42c1 !important;
+  
+  &.bg-opacity-10 {
+    background-color: rgba(111, 66, 193, 0.1) !important;
+  }
+}
+
+.text-purple {
+  color: #6f42c1 !important;
+}
+
+.bg-cyan {
+  background-color: #17a2b8 !important;
+  
+  &.bg-opacity-10 {
+    background-color: rgba(23, 162, 184, 0.1) !important;
+  }
+}
+
+.text-cyan {
+  color: #17a2b8 !important;
+}
+
+// Chart Containers
+canvas {
+  width: 100% !important;
+  height: 300px !important;
+}
+
+.chart-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  
+  .spinner-border {
+    width: 3rem;
+    height: 3rem;
+  }
+}
+
+// Table Styles
+.table {
+  th {
+    background: #f8f9fa;
+    border-bottom: 2px solid #e9ecef;
+    font-weight: 600;
+    color: #495057;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  td {
+    padding: 16px;
+    vertical-align: middle;
+    border-bottom: 1px solid #e9ecef;
+  }
+  
+  tbody tr {
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background: rgba(102, 126, 234, 0.02);
+    }
+  }
+}
+
+// User Avatar
+.user-avatar-sm {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  
+  i {
+    font-size: 18px;
+  }
+}
+
+// Badge Styles
+.badge {
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  
+  &.bg-success {
+    background: linear-gradient(135deg, #28a745, #20c997) !important;
+  }
+  
+  &.bg-danger {
+    background: linear-gradient(135deg, #dc3545, #c82333) !important;
+  }
+  
+  &.bg-warning {
+    background: linear-gradient(135deg, #ffc107, #fd7e14) !important;
+  }
+  
+  &.bg-info {
+    background: linear-gradient(135deg, #17a2b8, #138496) !important;
+  }
+  
+  &.bg-primary {
+    background: linear-gradient(135deg, #667eea, #764ba2) !important;
+  }
+}
+
+// Quick Action Buttons
+.btn-outline-primary,
+.btn-outline-success,
+.btn-outline-info,
+.btn-outline-secondary {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    
+    i {
+      transform: scale(1.1);
+    }
+  }
+  
+  i {
+    transition: transform 0.3s ease;
+  }
+}
+
+// System Alerts
+.list-group-item {
+  border-left: none;
+  border-right: none;
+  transition: all 0.2s ease;
+  
+  &.unread {
+    background: rgba(102, 126, 234, 0.05);
+    border-left: 4px solid #667eea;
+  }
+  
+  &:hover {
+    background: #f8f9fa;
+  }
+  
+  i {
+    transition: transform 0.2s ease;
+  }
+  
+  &:hover i {
+    transform: scale(1.1);
+  }
+}
+
+// Top Users Ranking
+.text-warning {
+  color: #ffc107 !important;
+}
+
+.text-secondary {
+  color: #6c757d !important;
+}
+
+.text-danger {
+  color: #dc3545 !important;
+}
+
+// Responsive
+@media (max-width: 992px) {
+  .stat-card {
+    margin-bottom: 16px;
+  }
+  
+  .table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  
+  .btn-group {
+    flex-wrap: wrap;
+    
+    .btn {
+      flex: 1;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-dashboard-container {
+    padding: 16px;
+  }
+  
+  .card-header {
+    .d-flex {
+      flex-direction: column;
+      align-items: flex-start !important;
+      gap: 12px;
+    }
+  }
+  
+  .stat-card {
+    .card-body {
+      padding: 16px;
+    }
+    
+    h3 {
+      font-size: 24px;
+    }
+  }
+  
+  .quick-action-btn {
+    .display-6 {
+      font-size: 32px;
+    }
+  }
+  
+  canvas {
+    height: 250px !important;
+  }
+}
+
+// Animations
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card {
+  animation: slideIn 0.5s ease;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.badge.bg-warning {
+  animation: pulse 2s infinite;
+}
+
+// Loading Spinner
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+  border-width: 0.25rem;
+}
+
+// Dark Mode Support
+@media (prefers-color-scheme: dark) {
+  .admin-dashboard-container {
+    background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+  }
+  
+  .card {
+    background: #2d2d2d;
+    color: #f8f9fa;
+    
+    .card-header {
+      background: #1a1a1a;
+      color: #f8f9fa;
+    }
+  }
+  
+  .bg-light {
+    background: #1a1a1a !important;
+  }
+  
+  .table {
+    color: #f8f9fa;
+    
+    th {
+      background: #1a1a1a;
+      color: #f8f9fa;
+    }
+    
+    td {
+      background: #2d2d2d;
+      border-bottom-color: #404040;
+    }
+  }
+  
+  .list-group-item {
+    background: #2d2d2d;
+    color: #f8f9fa;
+    border-color: #404040;
+    
+    &:hover {
+      background: #1a1a1a;
+    }
+    
+    &.unread {
+      background: rgba(102, 126, 234, 0.15);
+    }
+  }
+  
+  .text-muted {
+    color: #adb5bd !important;
+  }
+  
+  .btn-outline-secondary {
+    color: #adb5bd;
+    border-color: #404040;
+    
+    &:hover {
+      background: #404040;
+      color: white;
+    }
+    
+    &.active {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-color: transparent;
+      color: white;
+    }
+  }
+  
+  .user-avatar-sm {
+    background: rgba(102, 126, 234, 0.2) !important;
+    
+    i {
+      color: #667eea !important;
+    }
+  }
+}
+
+// Print Styles
+@media print {
+  .admin-dashboard-container {
+    padding: 0;
+    background: white;
+  }
+  
+  .bg-gradient-admin {
+    background: #f8f9fa !important;
+    color: black !important;
+  }
+  
+  .btn,
+  .dropdown,
+  .chart-loading,
+  .quick-actions {
+    display: none !important;
+  }
+  
+  canvas {
+    max-width: 100%;
+    height: auto !important;
+  }
+  
+  .card {
+    box-shadow: none !important;
+    border: 1px solid #dee2e6;
+  }
+}

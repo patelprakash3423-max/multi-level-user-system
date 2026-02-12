@@ -1,0 +1,600 @@
+<div class="statement-container">
+  <!-- Header Section -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-gradient-primary text-white py-3">
+          <div class="d-flex flex-wrap align-items-center justify-content-between">
+            <div class="d-flex align-items-center mb-2 mb-md-0">
+              <i class="bi bi-receipt-cutoff fs-1 me-3"></i>
+              <div>
+                <h2 class="mb-0 fw-bold">Balance Statement</h2>
+                <p class="mb-0 opacity-75">
+                  View and manage your complete transaction history
+                </p>
+              </div>
+            </div>
+            <div class="d-flex gap-2">
+              <button class="btn btn-light btn-sm" (click)="refresh()">
+                <i class="bi bi-arrow-clockwise me-1"></i> Refresh
+              </button>
+              <button class="btn btn-light btn-sm" (click)="printStatement()">
+                <i class="bi bi-printer me-1"></i> Print
+              </button>
+              <div class="btn-group" dropdown>
+                <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                  <i class="bi bi-download me-1"></i> Export
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                  <li><a class="dropdown-item" href="javascript:void(0)" (click)="exportAsCSV()">
+                    <i class="bi bi-file-earmark-spreadsheet me-2"></i> Export as CSV
+                  </a></li>
+                  <li><a class="dropdown-item" href="javascript:void(0)" (click)="exportAsPDF()">
+                    <i class="bi bi-file-earmark-pdf me-2"></i> Export as PDF
+                  </a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="row mb-4">
+    <div class="col-xl-3 col-md-6 mb-3">
+      <div class="card summary-card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="summary-icon bg-success bg-opacity-10 rounded-3 p-3 me-3">
+              <i class="bi bi-arrow-down-circle fs-3 text-success"></i>
+            </div>
+            <div>
+              <h6 class="text-muted mb-1">Total Credits</h6>
+              <h3 class="mb-0 fw-bold text-success">{{ formatCurrency(totalCredits) }}</h3>
+              <small class="text-muted">{{ getTransactionCount('credit') }} transactions</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-3">
+      <div class="card summary-card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="summary-icon bg-danger bg-opacity-10 rounded-3 p-3 me-3">
+              <i class="bi bi-arrow-up-circle fs-3 text-danger"></i>
+            </div>
+            <div>
+              <h6 class="text-muted mb-1">Total Debits</h6>
+              <h3 class="mb-0 fw-bold text-danger">{{ formatCurrency(totalDebits) }}</h3>
+              <small class="text-muted">{{ getTransactionCount('debit') }} transactions</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-3">
+      <div class="card summary-card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="summary-icon bg-warning bg-opacity-10 rounded-3 p-3 me-3">
+              <i class="bi bi-cash-stack fs-3 text-warning"></i>
+            </div>
+            <div>
+              <h6 class="text-muted mb-1">Recharges</h6>
+              <h3 class="mb-0 fw-bold text-warning">{{ formatCurrency(totalRecharges) }}</h3>
+              <small class="text-muted">{{ getTransactionCount('recharge') }} transactions</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-3">
+      <div class="card summary-card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="summary-icon bg-info bg-opacity-10 rounded-3 p-3 me-3">
+              <i class="bi bi-graph-up-arrow fs-3 text-info"></i>
+            </div>
+            <div>
+              <h6 class="text-muted mb-1">Commissions</h6>
+              <h3 class="mb-0 fw-bold text-info">{{ formatCurrency(totalCommissions) }}</h3>
+              <small class="text-muted">Earned from downline</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Balance Summary -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card shadow-sm border-0">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col-md-4 text-center text-md-start mb-3 mb-md-0">
+              <h6 class="text-muted mb-1">Opening Balance</h6>
+              <h4 class="mb-0 fw-bold">{{ formatCurrency(openingBalance) }}</h4>
+              <small class="text-muted">As of {{ formatDate(transactions[0]?.createdAt) }}</small>
+            </div>
+            
+            <div class="col-md-4 text-center mb-3 mb-md-0">
+              <div class="net-balance-circle mx-auto">
+                <span class="net-balance-label">Net Change</span>
+                <h3 class="net-balance-value" [ngClass]="{'text-success': netBalance >= 0, 'text-danger': netBalance < 0}">
+                  {{ netBalance >= 0 ? '+' : '' }}{{ formatCurrency(netBalance) }}
+                </h3>
+              </div>
+            </div>
+            
+            <div class="col-md-4 text-center text-md-end">
+              <h6 class="text-muted mb-1">Closing Balance</h6>
+              <h4 class="mb-0 fw-bold" [ngClass]="{'text-success': closingBalance >= 0, 'text-danger': closingBalance < 0}">
+                {{ formatCurrency(closingBalance) }}
+              </h4>
+              <small class="text-muted">As of {{ formatDate(transactions[transactions.length - 1]?.createdAt) }}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card shadow-sm border-0">
+        <div class="card-body">
+          <div class="row g-3">
+            <!-- Search -->
+            <div class="col-lg-3">
+              <label class="form-label fw-semibold">Search</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light border-end-0">
+                  <i class="bi bi-search"></i>
+                </span>
+                <input
+                  type="text"
+                  class="form-control border-start-0 ps-0"
+                  placeholder="Search by description, user, amount..."
+                  [(ngModel)]="searchTerm"
+                  (ngModelChange)="applyFilters()"
+                >
+              </div>
+            </div>
+
+            <!-- Transaction Type -->
+            <div class="col-lg-2">
+              <label class="form-label fw-semibold">Transaction Type</label>
+              <select class="form-select" [(ngModel)]="transactionType" (ngModelChange)="applyFilters()">
+                <option value="all">All Types</option>
+                <option value="credit">Credits</option>
+                <option value="debit">Debits</option>
+                <option value="recharge">Recharges</option>
+                <option value="commission">Commissions</option>
+              </select>
+            </div>
+
+            <!-- Date Range -->
+            <div class="col-lg-3">
+              <label class="form-label fw-semibold">Date Range</label>
+              <div class="btn-group w-100" role="group">
+                <button 
+                  type="button" 
+                  class="btn" 
+                  [class.btn-primary]="dateRange === 'today'" 
+                  [class.btn-outline-secondary]="dateRange !== 'today'"
+                  (click)="setDateRange('today')">
+                  Today
+                </button>
+                <button 
+                  type="button" 
+                  class="btn" 
+                  [class.btn-primary]="dateRange === 'week'" 
+                  [class.btn-outline-secondary]="dateRange !== 'week'"
+                  (click)="setDateRange('week')">
+                  Week
+                </button>
+                <button 
+                  type="button" 
+                  class="btn" 
+                  [class.btn-primary]="dateRange === 'month'" 
+                  [class.btn-outline-secondary]="dateRange !== 'month'"
+                  (click)="setDateRange('month')">
+                  Month
+                </button>
+                <button 
+                  type="button" 
+                  class="btn" 
+                  [class.btn-primary]="dateRange === 'year'" 
+                  [class.btn-outline-secondary]="dateRange !== 'year'"
+                  (click)="setDateRange('year')">
+                  Year
+                </button>
+              </div>
+            </div>
+
+            <!-- Custom Date Range -->
+            <div class="col-lg-2">
+              <label class="form-label fw-semibold">&nbsp;</label>
+              <button 
+                class="btn w-100" 
+                [class.btn-primary]="dateRange === 'custom'" 
+                [class.btn-outline-secondary]="dateRange !== 'custom'"
+                (click)="setDateRange('custom')">
+                <i class="bi bi-calendar-range me-2"></i>
+                Custom
+              </button>
+            </div>
+
+            <!-- Sort By -->
+            <div class="col-lg-2">
+              <label class="form-label fw-semibold">Sort By</label>
+              <div class="d-flex gap-2">
+                <select class="form-select" [(ngModel)]="sortBy" (ngModelChange)="applyFilters()">
+                  <option value="date">Date</option>
+                  <option value="amount">Amount</option>
+                  <option value="type">Type</option>
+                </select>
+                <button 
+                  class="btn btn-outline-secondary" 
+                  (click)="sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'; applyFilters()">
+                  <i class="bi" [class.bi-sort-down]="sortOrder === 'desc'" [class.bi-sort-up]="sortOrder === 'asc'"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Custom Date Picker -->
+          <div *ngIf="showDatePicker" class="row mt-3">
+            <div class="col-lg-4 offset-lg-3">
+              <div class="d-flex gap-2">
+                <div class="flex-grow-1">
+                  <input 
+                    type="date" 
+                    class="form-control" 
+                    [(ngModel)]="startDate" 
+                    placeholder="Start Date"
+                    (change)="applyCustomDateRange()">
+                </div>
+                <div class="flex-grow-1">
+                  <input 
+                    type="date" 
+                    class="form-control" 
+                    [(ngModel)]="endDate" 
+                    placeholder="End Date"
+                    (change)="applyCustomDateRange()">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filter Actions -->
+          <div class="row mt-3">
+            <div class="col-12">
+              <div class="d-flex justify-content-end gap-2">
+                <button class="btn btn-outline-secondary" (click)="clearFilters()">
+                  <i class="bi bi-eraser me-1"></i> Clear Filters
+                </button>
+                <span class="text-muted align-self-center">
+                  <i class="bi bi-funnel me-1"></i>
+                  {{ filteredTransactions.length }} of {{ transactions.length }} transactions
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="text-center py-5">
+    <div class="spinner-border text-primary" style="width: 4rem; height: 4rem;" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <h5 class="mt-4 text-muted">Loading your transactions...</h5>
+    <p class="text-muted">Fetching your balance statement</p>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && filteredTransactions.length === 0" class="text-center py-5">
+    <div class="empty-state">
+      <div class="empty-state-icon mb-4">
+        <i class="bi bi-receipt display-1 text-muted"></i>
+      </div>
+      <h4 class="fw-semibold mb-3">No Transactions Found</h4>
+      <p class="text-muted mb-4">
+        No transactions match your current filters.<br>
+        Try adjusting your search criteria or clear filters.
+      </p>
+      <div class="d-flex justify-content-center gap-3">
+        <button class="btn btn-primary" (click)="clearFilters()">
+          <i class="bi bi-eraser me-2"></i>
+          Clear Filters
+        </button>
+        <a routerLink="/transfer" class="btn btn-outline-success">
+          <i class="bi bi-send me-2"></i>
+          Make a Transfer
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Transactions Table -->
+  <div *ngIf="!isLoading && filteredTransactions.length > 0" class="row">
+    <div class="col-12">
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="bg-light">
+                <tr>
+                  <th class="ps-4">Date & Time</th>
+                  <th>Type</th>
+                  <th>Amount</th>
+                  <th>Counterparty</th>
+                  <th>Description</th>
+                  <th>Balance</th>
+                  <th>Status</th>
+                  <th class="pe-4">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let transaction of filteredTransactions | slice: (currentPage-1)*itemsPerPage : currentPage*itemsPerPage">
+                  <td class="ps-4">
+                    <div class="d-flex align-items-center">
+                      <i class="bi bi-clock-history text-muted me-2"></i>
+                      <div>
+                        <span class="d-block fw-semibold">{{ formatDate(transaction.createdAt) }}</span>
+                        <small class="text-muted">{{ transaction.createdAt | date:'shortTime' }}</small>
+                      </div>
+                    </div>
+                  </td>
+                  
+                  <td>
+                    <span class="badge d-inline-flex align-items-center" [ngClass]="getTransactionBadgeClass(transaction.type)">
+                      <i class="bi me-1" [class]="getTransactionIcon(transaction.type)"></i>
+                      {{ transaction.type | titlecase }}
+                    </span>
+                  </td>
+                  
+                  <td>
+                    <div [ngClass]="getAmountWithSign(transaction).class">
+                      <span class="fw-bold">{{ getAmountWithSign(transaction).sign }}</span>
+                      <span class="fw-bold">{{ transaction.amount | currency:'USD':'symbol':'1.2-2' }}</span>
+                    </div>
+                  </td>
+                  
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="counterparty-avatar bg-light rounded-2 p-1 me-2">
+                        <i class="bi bi-person-fill text-muted"></i>
+                      </div>
+                      <div>
+                        <span class="d-block">{{ getCounterparty(transaction) }}</span>
+                        <small class="text-muted">
+                          {{ transaction.type === 'credit' ? 'Sender' : transaction.type === 'debit' ? 'Receiver' : '' }}
+                        </small>
+                      </div>
+                    </div>
+                  </td>
+                  
+                  <td>
+                    <span class="d-block">{{ transaction.description || '-' }}</span>
+                    <small *ngIf="transaction.commissionEarned" class="text-success">
+                      <i class="bi bi-graph-up-arrow me-1"></i>
+                      Commission: {{ formatCurrency(transaction.commissionEarned) }}
+                    </small>
+                  </td>
+                  
+                  <td>
+                    <span class="fw-semibold">{{ formatCurrency(transaction.balanceAfter) }}</span>
+                    <small class="d-block text-muted">
+                      <span [ngClass]="{'text-success': transaction.balanceAfter > transaction.balanceBefore, 'text-danger': transaction.balanceAfter < transaction.balanceBefore}">
+                        {{ transaction.balanceAfter > transaction.balanceBefore ? '+' : '' }}{{ getBalanceChange(transaction) }}
+                      </span>
+                    </small>
+                  </td>
+                  
+                  <td>
+                    <span class="badge" [ngClass]="getStatusBadgeClass(transaction.status)">
+                      {{ transaction.status | titlecase }}
+                    </span>
+                  </td>
+                  
+                  <td class="pe-4">
+                    <div class="btn-group btn-group-sm">
+                      <button 
+                        class="btn btn-outline-primary" 
+                        (click)="viewTransactionDetails(transaction)"
+                        title="View Details">
+                        <i class="bi bi-eye"></i>
+                      </button>
+                      <button 
+                        *ngIf="transaction.type === 'debit' || transaction.type === 'credit'"
+                        class="btn btn-outline-success" 
+                        (click)="viewUserProfile(transaction.type === 'credit' ? transaction.sender._id : transaction.receiver._id)"
+                        title="View User Profile">
+                        <i class="bi bi-person"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <!-- Pagination -->
+        <div class="card-footer bg-white d-flex flex-wrap justify-content-between align-items-center py-3">
+          <div class="mb-2 mb-sm-0">
+            <small class="text-muted">
+              Showing {{ ((currentPage - 1) * itemsPerPage) + 1 }} - 
+              {{ min(currentPage * itemsPerPage, totalItems) }} of {{ totalItems }} transactions
+            </small>
+          </div>
+          
+          <nav aria-label="Transaction pagination">
+            <ul class="pagination pagination-sm mb-0">
+              <li class="page-item" [class.disabled]="currentPage === 1">
+                <a class="page-link" (click)="currentPage > 1 && changePage(currentPage - 1)" href="javascript:void(0)">
+                  <i class="bi bi-chevron-left"></i>
+                </a>
+              </li>
+              
+              <li *ngFor="let page of [].constructor(totalPages); let i = index" 
+                  class="page-item" 
+                  [class.active]="currentPage === i + 1">
+                <a class="page-link" (click)="changePage(i + 1)" href="javascript:void(0)">
+                  {{ i + 1 }}
+                </a>
+              </li>
+              
+              <li class="page-item" [class.disabled]="currentPage === totalPages">
+                <a class="page-link" (click)="currentPage < totalPages && changePage(currentPage + 1)" href="javascript:void(0)">
+                  <i class="bi bi-chevron-right"></i>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Transaction Details Modal -->
+  <div class="modal fade" [class.show]="showTransactionDetails" [style.display]="showTransactionDetails ? 'block' : 'none'" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content" *ngIf="selectedTransaction">
+        <div class="modal-header bg-gradient-primary text-white">
+          <h5 class="modal-title">
+            <i class="bi bi-receipt me-2"></i>
+            Transaction Details
+          </h5>
+          <button type="button" class="btn-close btn-close-white" (click)="closeTransactionDetails()"></button>
+        </div>
+        
+        <div class="modal-body">
+          <!-- Transaction Status Banner -->
+          <div class="transaction-status-banner mb-4 p-3 rounded-3" [ngClass]="'bg-' + getStatusBadgeClass(selectedTransaction.status).replace('bg-', '') + '-subtle'">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-info-circle-fill fs-3 me-3" [ngClass]="'text-' + getStatusBadgeClass(selectedTransaction.status).replace('bg-', '')"></i>
+              <div>
+                <h6 class="mb-0 fw-semibold">Transaction {{ selectedTransaction.status | titlecase }}</h6>
+                <small class="text-muted">Transaction ID: {{ selectedTransaction._id }}</small>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Amount Display -->
+          <div class="text-center mb-4">
+            <div class="amount-circle mx-auto mb-3" [ngClass]="getTransactionClass(selectedTransaction.type)">
+              <i class="bi fs-2" [class]="getTransactionIcon(selectedTransaction.type)"></i>
+            </div>
+            <h2 [ngClass]="getAmountWithSign(selectedTransaction).class" class="fw-bold mb-1">
+              {{ getAmountWithSign(selectedTransaction).sign }} {{ selectedTransaction.amount | currency:'USD':'symbol':'1.2-2' }}
+            </h2>
+            <span class="badge" [ngClass]="getTransactionBadgeClass(selectedTransaction.type)">
+              {{ selectedTransaction.type | titlecase }}
+            </span>
+          </div>
+          
+          <!-- Transaction Details Grid -->
+          <div class="row g-4">
+            <div class="col-md-6">
+              <div class="detail-card bg-light p-3 rounded-3">
+                <h6 class="text-muted mb-2">
+                  <i class="bi bi-person me-2"></i>
+                  Sender Information
+                </h6>
+                <p class="mb-1 fw-semibold">{{ selectedTransaction.sender.username || 'N/A' }}</p>
+                <small class="text-muted">{{ selectedTransaction.sender.email || 'System' }}</small>
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="detail-card bg-light p-3 rounded-3">
+                <h6 class="text-muted mb-2">
+                  <i class="bi bi-person me-2"></i>
+                  Receiver Information
+                </h6>
+                <p class="mb-1 fw-semibold">{{ selectedTransaction.receiver.username || 'N/A' }}</p>
+                <small class="text-muted">{{ selectedTransaction.receiver.email || 'System' }}</small>
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="detail-card bg-light p-3 rounded-3">
+                <h6 class="text-muted mb-2">
+                  <i class="bi bi-calendar me-2"></i>
+                  Date & Time
+                </h6>
+                <p class="mb-1 fw-semibold">{{ formatDateTime(selectedTransaction.createdAt) }}</p>
+                <small class="text-muted">Transaction timestamp</small>
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="detail-card bg-light p-3 rounded-3">
+                <h6 class="text-muted mb-2">
+                  <i class="bi bi-cash-stack me-2"></i>
+                  Balance Impact
+                </h6>
+                <div class="d-flex justify-content-between mb-1">
+                  <span class="text-muted">Before:</span>
+                  <span class="fw-semibold">{{ formatCurrency(selectedTransaction.balanceBefore) }}</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <span class="text-muted">After:</span>
+                  <span class="fw-semibold">{{ formatCurrency(selectedTransaction.balanceAfter) }}</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-12" *ngIf="selectedTransaction.description">
+              <div class="detail-card bg-light p-3 rounded-3">
+                <h6 class="text-muted mb-2">
+                  <i class="bi bi-chat-text me-2"></i>
+                  Description
+                </h6>
+                <p class="mb-0">{{ selectedTransaction.description }}</p>
+              </div>
+            </div>
+            
+            <div class="col-12" *ngIf="selectedTransaction.commissionEarned">
+              <div class="detail-card bg-success bg-opacity-10 p-3 rounded-3">
+                <div class="d-flex align-items-center">
+                  <i class="bi bi-graph-up-arrow fs-4 text-success me-3"></i>
+                  <div>
+                    <h6 class="text-success mb-1">Commission Earned</h6>
+                    <h4 class="text-success mb-0 fw-bold">{{ formatCurrency(selectedTransaction.commissionEarned) }}</h4>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" (click)="closeTransactionDetails()">
+            <i class="bi bi-x-circle me-2"></i>
+            Close
+          </button>
+          <button type="button" class="btn btn-primary" (click)="viewTransactionReceipt(selectedTransaction)">
+            <i class="bi bi-receipt me-2"></i>
+            View Receipt
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal-backdrop fade show" *ngIf="showTransactionDetails" (click)="closeTransactionDetails()"></div>
+</div>

@@ -1,0 +1,423 @@
+.statement-container {
+  padding: 24px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  min-height: calc(100vh - 76px);
+  
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
+}
+
+// Header Styles
+.bg-gradient-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+// Summary Cards
+.summary-card {
+  border-radius: 16px;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  .summary-icon {
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+}
+
+// Net Balance Circle
+.net-balance-circle {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f8f9fa, #ffffff);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid #667eea;
+  box-shadow: 0 8px 16px rgba(102, 126, 234, 0.2);
+  
+  .net-balance-label {
+    font-size: 14px;
+    color: #6c757d;
+    margin-bottom: 8px;
+  }
+  
+  .net-balance-value {
+    font-size: 32px;
+    font-weight: 700;
+    margin: 0;
+  }
+  
+  @media (max-width: 768px) {
+    width: 140px;
+    height: 140px;
+    margin: 20px auto;
+    
+    .net-balance-value {
+      font-size: 24px;
+    }
+  }
+}
+
+// Table Styles
+.table {
+  th {
+    background: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: 600;
+    color: #495057;
+    padding: 16px;
+  }
+  
+  td {
+    padding: 16px;
+    vertical-align: middle;
+  }
+  
+  tbody tr {
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background: rgba(102, 126, 234, 0.02);
+    }
+  }
+}
+
+// Counterparty Avatar
+.counterparty-avatar {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  
+  i {
+    font-size: 16px;
+  }
+}
+
+// Transaction Badges
+.badge {
+  font-weight: 500;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  
+  i {
+    font-size: 14px;
+  }
+  
+  &.bg-success {
+    background: linear-gradient(135deg, #28a745, #20c997) !important;
+  }
+  
+  &.bg-danger {
+    background: linear-gradient(135deg, #dc3545, #c82333) !important;
+  }
+  
+  &.bg-warning {
+    background: linear-gradient(135deg, #ffc107, #fd7e14) !important;
+  }
+  
+  &.bg-info {
+    background: linear-gradient(135deg, #17a2b8, #138496) !important;
+  }
+}
+
+// Pagination
+.pagination {
+  .page-item {
+    .page-link {
+      border: none;
+      padding: 8px 12px;
+      margin: 0 2px;
+      border-radius: 8px;
+      color: #495057;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        background: #e9ecef;
+        color: #667eea;
+      }
+      
+      i {
+        font-size: 14px;
+      }
+    }
+    
+    &.active .page-link {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+    }
+    
+    &.disabled .page-link {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+  }
+}
+
+// Modal Styles
+.modal-content {
+  border: none;
+  border-radius: 20px;
+  overflow: hidden;
+  
+  .modal-header {
+    border-bottom: none;
+    
+    &.bg-gradient-primary {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+    }
+  }
+  
+  .modal-body {
+    padding: 24px;
+  }
+  
+  .modal-footer {
+    border-top: 1px solid #e9ecef;
+    padding: 16px 24px;
+  }
+}
+
+.amount-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &.credit {
+    background: rgba(40, 167, 69, 0.1);
+    color: #28a745;
+  }
+  
+  &.debit {
+    background: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+  }
+  
+  &.recharge {
+    background: rgba(255, 193, 7, 0.1);
+    color: #ffc107;
+  }
+  
+  &.commission {
+    background: rgba(23, 162, 184, 0.1);
+    color: #17a2b8;
+  }
+  
+  i {
+    font-size: 32px;
+  }
+}
+
+.transaction-status-banner {
+  border-left: 4px solid;
+  
+  &.bg-success-subtle {
+    background: rgba(40, 167, 69, 0.05);
+    border-left-color: #28a745;
+  }
+  
+  &.bg-danger-subtle {
+    background: rgba(220, 53, 69, 0.05);
+    border-left-color: #dc3545;
+  }
+  
+  &.bg-warning-subtle {
+    background: rgba(255, 193, 7, 0.05);
+    border-left-color: #ffc107;
+  }
+}
+
+.detail-card {
+  transition: all 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  }
+}
+
+// Empty State
+.empty-state {
+  padding: 48px 24px;
+  text-align: center;
+  
+  .empty-state-icon {
+    i {
+      font-size: 64px;
+      color: #adb5bd;
+      animation: float 3s ease-in-out infinite;
+    }
+  }
+}
+
+// Loading State
+.spinner-border {
+  width: 4rem;
+  height: 4rem;
+  border-width: 0.25rem;
+}
+
+// Animations
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card {
+  animation: fadeIn 0.5s ease;
+}
+
+// Responsive
+@media (max-width: 992px) {
+  .net-balance-circle {
+    width: 150px;
+    height: 150px;
+    
+    .net-balance-value {
+      font-size: 28px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  
+  .btn-group {
+    flex-wrap: wrap;
+    
+    .btn {
+      flex: 1;
+    }
+  }
+  
+  .pagination {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .modal-dialog {
+    margin: 10px;
+  }
+}
+
+// Print Styles
+@media print {
+  .statement-container {
+    padding: 0;
+    background: white;
+  }
+  
+  .bg-gradient-primary {
+    background: #f8f9fa !important;
+    color: black !important;
+  }
+  
+  .btn,
+  .pagination,
+  .modal,
+  .modal-backdrop,
+  .dropdown {
+    display: none !important;
+  }
+  
+  .table {
+    border: 1px solid #dee2e6;
+    
+    th {
+      background: #e9ecef !important;
+      color: black !important;
+    }
+  }
+  
+  .net-balance-circle {
+    border: 1px solid #dee2e6;
+    box-shadow: none;
+  }
+}
+
+// Dark Mode Support
+@media (prefers-color-scheme: dark) {
+  .statement-container {
+    background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+  }
+  
+  .card {
+    background: #2d2d2d;
+    color: #f8f9fa;
+    
+    .card-header {
+      background: #1a1a1a;
+      color: #f8f9fa;
+    }
+  }
+  
+  .table {
+    color: #f8f9fa;
+    
+    th {
+      background: #1a1a1a;
+      color: #f8f9fa;
+    }
+    
+    td {
+      background: #2d2d2d;
+    }
+  }
+  
+  .bg-light {
+    background: #1a1a1a !important;
+  }
+  
+  .text-muted {
+    color: #adb5bd !important;
+  }
+  
+  .modal-content {
+    background: #2d2d2d;
+    color: #f8f9fa;
+  }
+  
+  .detail-card {
+    background: #1a1a1a !important;
+    color: #f8f9fa;
+  }
+}

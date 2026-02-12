@@ -1,0 +1,130 @@
+<div class="login-container">
+  <div class="row justify-content-center align-items-center min-vh-100">
+    <div class="col-md-6 col-lg-4">
+      <div class="card shadow-lg border-0">
+        <div class="card-header bg-primary text-white text-center py-4">
+          <h2 class="mb-0">
+            <i class="bi bi-shield-lock me-2"></i>
+            Multi-Level User System
+          </h2>
+          <p class="mb-0 mt-2 small opacity-75">Secure Authentication</p>
+        </div>
+        
+        <div class="card-body p-4">
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <!-- Email -->
+            <div class="mb-3">
+              <label for="email" class="form-label">
+                <i class="bi bi-envelope me-1"></i> Email Address
+              </label>
+              <input
+                type="email"
+                id="email"
+                formControlName="email"
+                class="form-control form-control-lg"
+                placeholder="Enter your email"
+                [class.is-invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+              >
+              <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="invalid-feedback">
+                <div *ngIf="loginForm.get('email')?.errors?.['required']">Email is required</div>
+                <div *ngIf="loginForm.get('email')?.errors?.['email']">Please enter a valid email</div>
+              </div>
+            </div>
+
+            <!-- Password -->
+            <div class="mb-3">
+              <label for="password" class="form-label">
+                <i class="bi bi-key me-1"></i> Password
+              </label>
+              <div class="input-group">
+                <input
+                  [type]="showPassword ? 'text' : 'password'"
+                  id="password"
+                  formControlName="password"
+                  class="form-control form-control-lg"
+                  placeholder="Enter your password"
+                  [class.is-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+                >
+                <button
+                  class="btn btn-outline-secondary"
+                  type="button"
+                  (click)="togglePasswordVisibility()"
+                >
+                  <i class="bi" [class.bi-eye]="!showPassword" [class.bi-eye-slash]="showPassword"></i>
+                </button>
+              </div>
+              <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="invalid-feedback">
+                <div *ngIf="loginForm.get('password')?.errors?.['required']">Password is required</div>
+                <div *ngIf="loginForm.get('password')?.errors?.['minlength']">
+                  Password must be at least 6 characters
+                </div>
+              </div>
+            </div>
+
+            <!-- CAPTCHA -->
+            <div class="mb-4">
+              <label class="form-label">
+                <i class="bi bi-shield-check me-1"></i> CAPTCHA Verification
+              </label>
+              <div class="d-flex align-items-center mb-2">
+                <div class="captcha-image bg-light p-2 rounded me-3">
+                  <img [src]="captchaImage" *ngIf="captchaImage" alt="CAPTCHA" class="captcha-img">
+                </div>
+                <button type="button" class="btn btn-outline-primary btn-sm" (click)="refreshCaptcha()">
+                  <i class="bi bi-arrow-clockwise"></i> Refresh
+                </button>
+              </div>
+              <input
+                type="text"
+                formControlName="captchaText"
+                class="form-control"
+                placeholder="Enter CAPTCHA text"
+                [class.is-invalid]="loginForm.get('captchaText')?.invalid && loginForm.get('captchaText')?.touched"
+              >
+              <div *ngIf="loginForm.get('captchaText')?.invalid && loginForm.get('captchaText')?.touched" class="invalid-feedback">
+                CAPTCHA is required
+              </div>
+              <small class="form-text text-muted">
+                Enter the characters shown in the image above
+              </small>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="d-grid gap-2">
+              <button
+                type="submit"
+                class="btn btn-primary btn-lg"
+                [disabled]="loginForm.invalid || isLoading"
+              >
+                <span *ngIf="!isLoading">
+                  <i class="bi bi-box-arrow-in-right me-2"></i> Login
+                </span>
+                <span *ngIf="isLoading">
+                  <span class="spinner-border spinner-border-sm me-2"></span>
+                  Logging in...
+                </span>
+              </button>
+            </div>
+
+            <!-- Hidden session ID -->
+            <input type="hidden" formControlName="sessionId">
+          </form>
+
+          <div class="text-center mt-4">
+            <p class="mb-0">
+              Don't have an account?
+              <a routerLink="/register" class="text-decoration-none">Register here</a>
+            </p>
+          </div>
+        </div>
+
+        <div class="card-footer text-center py-3">
+          <small class="text-muted">
+            <i class="bi bi-info-circle me-1"></i>
+            Secure login with CAPTCHA verification
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

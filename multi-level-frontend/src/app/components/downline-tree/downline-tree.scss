@@ -1,0 +1,335 @@
+.downline-tree-container {
+  padding: 24px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  min-height: calc(100vh - 76px);
+  
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
+}
+
+// Header Styles
+.bg-gradient-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+// Stat Cards
+.stat-card {
+  transition: all 0.3s ease;
+  border-radius: 16px;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  .stat-icon {
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: scale(1.1);
+      background: rgba(102, 126, 234, 0.2) !important;
+    }
+  }
+}
+
+// Level Distribution
+.level-distribution {
+  .level-bar-item {
+    .progress {
+      background-color: #e9ecef;
+      border-radius: 8px;
+      height: 10px;
+      overflow: hidden;
+      
+      .progress-bar {
+        transition: width 0.6s ease;
+        
+        &.level-progress-1 {
+          background: linear-gradient(90deg, #0d6efd, #4d94ff);
+        }
+        &.level-progress-2 {
+          background: linear-gradient(90deg, #20c997, #5ce0b3);
+        }
+        &.level-progress-3 {
+          background: linear-gradient(90deg, #fd7e14, #ffa44d);
+        }
+        &.level-progress-4 {
+          background: linear-gradient(90deg, #6f42c1, #9d73e0);
+        }
+        &.level-progress-5 {
+          background: linear-gradient(90deg, #d63384, #e685b5);
+        }
+      }
+    }
+  }
+}
+
+// User Card (Grid View)
+.user-card {
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12) !important;
+    
+    .user-avatar {
+      transform: scale(1.1);
+    }
+  }
+  
+  .user-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    
+    &.bg-primary-subtle {
+      background: linear-gradient(135deg, rgba(13, 110, 253, 0.1), rgba(13, 110, 253, 0.2));
+    }
+    
+    &.bg-success-subtle {
+      background: linear-gradient(135deg, rgba(25, 135, 84, 0.1), rgba(25, 135, 84, 0.2));
+    }
+    
+    &.bg-info-subtle {
+      background: linear-gradient(135deg, rgba(13, 202, 240, 0.1), rgba(13, 202, 240, 0.2));
+    }
+    
+    &.bg-warning-subtle {
+      background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 193, 7, 0.2));
+    }
+    
+    &.bg-danger-subtle {
+      background: linear-gradient(135deg, rgba(220, 53, 69, 0.1), rgba(220, 53, 69, 0.2));
+    }
+    
+    .avatar-text {
+      font-size: 32px;
+      font-weight: 600;
+    }
+  }
+  
+  .user-stats {
+    background: linear-gradient(135deg, #f8f9fa, #ffffff);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+  }
+}
+
+// Table View
+.table {
+  th {
+    background: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: 600;
+    color: #495057;
+  }
+  
+  td {
+    vertical-align: middle;
+    padding: 16px;
+  }
+  
+  tbody tr {
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background: rgba(102, 126, 234, 0.02);
+    }
+  }
+}
+
+.user-avatar-sm {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  
+  i {
+    font-size: 18px;
+  }
+}
+
+// Badge Styles
+.badge {
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 20px;
+  
+  &.level-1 {
+    background: linear-gradient(135deg, #0d6efd, #4d94ff);
+    color: white;
+  }
+  
+  &.level-2 {
+    background: linear-gradient(135deg, #20c997, #5ce0b3);
+    color: white;
+  }
+  
+  &.level-3 {
+    background: linear-gradient(135deg, #fd7e14, #ffa44d);
+    color: white;
+  }
+  
+  &.level-4 {
+    background: linear-gradient(135deg, #6f42c1, #9d73e0);
+    color: white;
+  }
+  
+  &.level-5 {
+    background: linear-gradient(135deg, #d63384, #e685b5);
+    color: white;
+  }
+  
+  &.level-deep {
+    background: linear-gradient(135deg, #6c757d, #adb5bd);
+    color: white;
+  }
+}
+
+// Pagination
+.pagination {
+  .page-item {
+    .page-link {
+      border: none;
+      padding: 8px 14px;
+      margin: 0 2px;
+      border-radius: 8px;
+      color: #495057;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        background: #e9ecef;
+        color: #0d6efd;
+      }
+    }
+    
+    &.active .page-link {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+    }
+  }
+}
+
+// Empty State
+.empty-state {
+  padding: 48px 24px;
+  text-align: center;
+  
+  .empty-state-icon {
+    i {
+      font-size: 64px;
+      color: #adb5bd;
+      animation: float 3s ease-in-out infinite;
+    }
+  }
+}
+
+// Animations
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tree-view-container,
+.grid-view-container,
+.list-view-container {
+  animation: fadeIn 0.5s ease;
+}
+
+// Loading Spinner
+.spinner-border {
+  width: 4rem;
+  height: 4rem;
+  border-width: 0.25rem;
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .stat-card {
+    margin-bottom: 16px;
+  }
+  
+  .btn-group {
+    flex-wrap: wrap;
+    
+    .btn {
+      flex: 1;
+    }
+  }
+  
+  .table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  
+  .pagination {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+// Dark Mode Support
+@media (prefers-color-scheme: dark) {
+  .downline-tree-container {
+    background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+  }
+  
+  .card {
+    background: #2d2d2d;
+    color: #f8f9fa;
+    
+    .card-header {
+      background: #1a1a1a;
+      color: #f8f9fa;
+    }
+  }
+  
+  .table {
+    color: #f8f9fa;
+    
+    th {
+      background: #1a1a1a;
+      color: #f8f9fa;
+    }
+    
+    td {
+      background: #2d2d2d;
+    }
+  }
+  
+  .bg-light {
+    background: #1a1a1a !important;
+  }
+  
+  .text-muted {
+    color: #adb5bd !important;
+  }
+}

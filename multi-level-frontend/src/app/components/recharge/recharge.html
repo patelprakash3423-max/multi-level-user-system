@@ -1,0 +1,140 @@
+<div class="recharge-container">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <!-- Header -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-success text-white py-4">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-cash-stack fs-1 me-3"></i>
+                        <div>
+                            <h2 class="mb-0 fw-bold">Self Recharge</h2>
+                            <p class="mb-0 opacity-75">Sirf owner ke liye - Apna khud ka balance badhayein</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Current Balance Card -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="balance-icon bg-info bg-opacity-10 rounded-3 p-3 me-3">
+                            <i class="bi bi-wallet2 fs-2 text-info"></i>
+                        </div>
+                        <div>
+                            <small class="text-muted d-block">Current Balance</small>
+                            <h2 class="mb-0 fw-bold text-primary">₹{{ currentBalance.toLocaleString() }}</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recharge Form -->
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <div class="owner-badge bg-warning bg-opacity-10 p-3 rounded-3 mb-4">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-shield-check text-warning fs-4 me-3"></i>
+                            <div>
+                                <strong>Owner Access Only</strong>
+                                <p class="mb-0 small">Aap owner role mein hain, isliye self recharge kar sakte hain</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form [formGroup]="rechargeForm" (ngSubmit)="onSubmit()">
+                        <!-- Amount Field -->
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-currency-rupee me-1"></i>
+                                Recharge Amount
+                                <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text bg-light">₹</span>
+                                <input type="number" class="form-control" formControlName="amount"
+                                    placeholder="Enter amount"
+                                    [class.is-invalid]="rechargeForm.get('amount')?.invalid && rechargeForm.get('amount')?.touched">
+                            </div>
+                            <div *ngIf="rechargeForm.get('amount')?.invalid && rechargeForm.get('amount')?.touched"
+                                class="invalid-feedback d-block">
+                                {{ getErrorMessage() }}
+                            </div>
+                        </div>
+
+                        <!-- Quick Amounts -->
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Quick Amounts</label>
+                            <div class="d-flex flex-wrap gap-2">
+                                <button *ngFor="let amount of quickAmounts" type="button"
+                                    class="btn btn-outline-success" (click)="setQuickAmount(amount)">
+                                    ₹{{ amount.toLocaleString() }}
+                                </button>
+                                <button type="button" class="btn btn-outline-success" (click)="setQuickAmount(50000)">
+                                    ₹50,000
+                                </button>
+                                <button type="button" class="btn btn-outline-success" (click)="setQuickAmount(100000)">
+                                    ₹1,00,000
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Info Alert -->
+                        <div class="alert alert-info d-flex align-items-center mb-4">
+                            <i class="bi bi-info-circle-fill fs-4 me-3"></i>
+                            <div>
+                                <strong>Note:</strong> Ye amount aapke apne balance mein add hoga.
+                                Isse kisi parent se koi deduction nahi hoga.
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success btn-lg"
+                                [disabled]="rechargeForm.invalid || isLoading">
+                                <span *ngIf="!isLoading">
+                                    <i class="bi bi-cash-stack me-2"></i>
+                                    Recharge Now
+                                </span>
+                                <span *ngIf="isLoading">
+                                    <span class="spinner-border spinner-border-sm me-2"></span>
+                                    Processing...
+                                </span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Guidelines Card -->
+            <div class="card shadow-sm border-0 mt-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="bi bi-info-circle text-info me-2"></i>
+                        Recharge Guidelines
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li class="d-flex mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <span>Sirf <strong>Owner role</strong> wala user hi self recharge kar sakta hai</span>
+                        </li>
+                        <li class="d-flex mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <span>Minimum recharge amount: ₹100</span>
+                        </li>
+                        <li class="d-flex mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <span>Maximum recharge amount: ₹10,00,000 per transaction</span>
+                        </li>
+                        <li class="d-flex">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <span>Recharge amount instantly aapke balance mein add ho jayega</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

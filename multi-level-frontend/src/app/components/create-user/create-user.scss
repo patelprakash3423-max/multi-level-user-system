@@ -1,0 +1,379 @@
+.create-user-container {
+  padding: 20px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+  min-height: calc(100vh - 76px);
+}
+
+// Card Styles
+.card {
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  .card-header {
+    border-bottom: none;
+    
+    &.bg-success {
+      background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+    }
+  }
+}
+
+// Form Styles
+.form-control, .input-group-text {
+  border: 1px solid #e0e0e0;
+  transition: all 0.2s ease;
+  
+  &:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+  }
+}
+
+.form-control-lg {
+  padding: 12px 16px;
+  font-size: 16px;
+}
+
+.input-group-text {
+  background-color: #f8f9fa;
+  border-right: none;
+  
+  + .form-control {
+    border-left: none;
+    
+    &:focus {
+      border-left: none;
+    }
+  }
+}
+
+// Password Requirements
+.password-requirements {
+  font-size: 12px;
+  
+  span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    
+    i {
+      font-size: 14px;
+    }
+  }
+}
+
+// Progress Bar
+.progress {
+  background-color: #e9ecef;
+  border-radius: 10px;
+  overflow: hidden;
+  
+  .progress-bar {
+    transition: width 0.3s ease;
+    
+    &.bg-danger {
+      background: linear-gradient(90deg, #dc3545, #ff6b6b);
+    }
+    
+    &.bg-warning {
+      background: linear-gradient(90deg, #ffc107, #ffd658);
+    }
+    
+    &.bg-info {
+      background: linear-gradient(90deg, #17a2b8, #6ed4ff);
+    }
+    
+    &.bg-success {
+      background: linear-gradient(90deg, #28a745, #5cb85c);
+    }
+  }
+}
+
+// Level Info Card
+.level-info-card {
+  background: linear-gradient(135deg, #f8f9fa, #ffffff);
+  border-left: 4px solid #28a745;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateX(5px);
+    border-left-width: 6px;
+  }
+}
+
+.level-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: scale(1.1);
+  }
+}
+
+// Tips Card
+.tips-card {
+  border-left: 4px solid #17a2b8;
+  background: linear-gradient(135deg, rgba(23, 162, 184, 0.1), rgba(23, 162, 184, 0.05));
+  
+  ul {
+    list-style-type: none;
+    padding-left: 0;
+    
+    li {
+      position: relative;
+      padding-left: 20px;
+      
+      &:before {
+        content: "•";
+        color: #17a2b8;
+        font-weight: bold;
+        position: absolute;
+        left: 5px;
+      }
+    }
+  }
+}
+
+// Info Icons
+.info-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: rotate(5deg) scale(1.1);
+  }
+}
+
+// Alert Styles
+.alert {
+  border-radius: 12px;
+  border: none;
+  
+  &-info {
+    background: linear-gradient(135deg, rgba(23, 162, 184, 0.1), rgba(23, 162, 184, 0.05));
+    border-left: 4px solid #17a2b8;
+  }
+  
+  &-warning {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 193, 7, 0.05));
+    border-left: 4px solid #ffc107;
+  }
+}
+
+// Button Styles
+.btn {
+  border-radius: 10px;
+  padding: 10px 24px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  &-success {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    border: none;
+    
+    &:hover {
+      background: linear-gradient(135deg, #218838, #1e7e34);
+    }
+    
+    &:disabled {
+      background: linear-gradient(135deg, #6c757d, #5a6268);
+      transform: none;
+      box-shadow: none;
+    }
+  }
+  
+  &-outline-success {
+    border-color: #28a745;
+    color: #28a745;
+    
+    &:hover {
+      background: linear-gradient(135deg, #28a745, #20c997);
+      border-color: transparent;
+      color: white;
+    }
+  }
+  
+  &-lg {
+    padding: 12px 30px;
+    font-size: 16px;
+  }
+}
+
+// Validation Styles
+.invalid-feedback {
+  display: block;
+  font-size: 12px;
+  margin-top: 4px;
+  color: #dc3545;
+}
+
+.is-invalid {
+  border-color: #dc3545;
+  
+  &:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+  }
+}
+
+// Form Labels
+.form-label {
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: #495057;
+  
+  .text-danger {
+    font-size: 16px;
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .create-user-container {
+    padding: 15px;
+  }
+  
+  .card-body {
+    padding: 1.5rem !important;
+  }
+  
+  .btn-lg {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+  
+  .d-flex.justify-content-between {
+    flex-direction: column;
+    gap: 15px;
+    
+    .btn {
+      width: 100%;
+    }
+  }
+  
+  .level-info-card {
+    margin-top: 20px;
+  }
+}
+
+// Loading Spinner
+.spinner-border {
+  width: 1.2rem;
+  height: 1.2rem;
+  border-width: 2px;
+}
+
+// Animation
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card {
+  animation: slideIn 0.4s ease-out;
+}
+
+// Custom Checkbox
+.form-check-input {
+  width: 1.2em;
+  height: 1.2em;
+  margin-top: 0.15em;
+  border-color: #28a745;
+  
+  &:checked {
+    background-color: #28a745;
+    border-color: #28a745;
+  }
+  
+  &:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+  }
+}
+
+// Tooltip Styles
+[data-tooltip] {
+  position: relative;
+  cursor: help;
+  
+  &:before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px 10px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    font-size: 12px;
+    border-radius: 4px;
+    white-space: nowrap;
+    display: none;
+    z-index: 1000;
+  }
+  
+  &:hover:before {
+    display: block;
+  }
+}
+
+// Stats Cards
+.stats-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    
+    .stats-icon, .stats-label {
+      color: white !important;
+    }
+  }
+}
+
+.stats-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(40, 167, 69, 0.1);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.stats-label {
+  color: #6c757d;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.stats-value {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 5px;
+}

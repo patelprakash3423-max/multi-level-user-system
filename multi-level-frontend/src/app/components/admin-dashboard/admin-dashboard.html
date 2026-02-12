@@ -1,0 +1,636 @@
+<div class="admin-dashboard-container">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-gradient-admin text-white py-3">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between">
+                        <div class="d-flex align-items-center mb-2 mb-md-0">
+                            <i class="bi bi-shield-shaded fs-1 me-3"></i>
+                            <div>
+                                <h2 class="mb-0 fw-bold">Admin Dashboard</h2>
+                                <p class="mb-0 opacity-75">
+                                    System overview and management console
+                                </p>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-light btn-sm" (click)="refreshData()">
+                                <i class="bi bi-arrow-clockwise me-1"></i> Refresh
+                            </button>
+                            <button class="btn btn-light btn-sm" (click)="exportReport()">
+                                <i class="bi bi-download me-1"></i> Export
+                            </button>
+                            <div class="dropdown">
+                                <button class="btn btn-light btn-sm dropdown-toggle" type="button"
+                                    data-bs-toggle="dropdown">
+                                    <i class="bi bi-calendar-range me-1"></i> {{ dateRange | titlecase }}
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" href="javascript:void(0)"
+                                            (click)="setDateRange('today')">Today</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0)"
+                                            (click)="setDateRange('week')">This Week</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0)"
+                                            (click)="setDateRange('month')">This Month</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0)"
+                                            (click)="setDateRange('year')">This Year</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Cards Row 1 -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card stat-card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon bg-primary bg-opacity-10 rounded-3 p-3 me-3">
+                            <i class="bi bi-people-fill fs-3 text-primary"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-1">Total Users</h6>
+                            <h3 class="mb-0 fw-bold">{{ formatNumber(totalUsers) }}</h3>
+                            <small class="text-success">
+                                <i class="bi bi-arrow-up me-1"></i>
+                                +{{ totalUsers - (balanceSummary?.summary?.totalUsers || 0) + 12 }} this week
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card stat-card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon bg-success bg-opacity-10 rounded-3 p-3 me-3">
+                            <i class="bi bi-cash-stack fs-3 text-success"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-1">Total Balance</h6>
+                            <h3 class="mb-0 fw-bold">{{ formatCurrency(totalBalance) }}</h3>
+                            <small class="text-success">
+                                <i class="bi bi-arrow-up me-1"></i>
+                                +{{ formatCurrency(balanceSummary?.summary?.avgBalance || 0) }} avg
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card stat-card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon bg-info bg-opacity-10 rounded-3 p-3 me-3">
+                            <i class="bi bi-arrow-left-right fs-3 text-info"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-1">Transactions</h6>
+                            <h3 class="mb-0 fw-bold">{{ formatNumber(totalTransactions) }}</h3>
+                            <small class="text-warning">
+                                <i class="bi bi-clock me-1"></i>
+                                {{ pendingTransactions }} pending
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card stat-card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon bg-warning bg-opacity-10 rounded-3 p-3 me-3">
+                            <i class="bi bi-activity fs-3 text-warning"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-1">Active Users</h6>
+                            <h3 class="mb-0 fw-bold">{{ formatNumber(activeUsers) }}</h3>
+                            <small class="text-danger">
+                                <i class="bi bi-person-down me-1"></i>
+                                {{ inactiveUsers }} inactive
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Cards Row 2 -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card stat-card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon bg-danger bg-opacity-10 rounded-3 p-3 me-3">
+                            <i class="bi bi-shield-lock fs-3 text-danger"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-1">Administrators</h6>
+                            <h3 class="mb-0 fw-bold">{{ formatNumber(totalAdmins) }}</h3>
+                            <small class="text-primary">
+                                <i class="bi bi-person-badge me-1"></i>
+                                {{ totalOwners }} owners
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card stat-card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon bg-secondary bg-opacity-10 rounded-3 p-3 me-3">
+                            <i class="bi bi-diagram-3 fs-3 text-secondary"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-1">Network Depth</h6>
+                            <h3 class="mb-0 fw-bold">{{ balanceSummary?.byLevel?.length || 0 }} Levels</h3>
+                            <small class="text-info">
+                                <i class="bi bi-layers me-1"></i>
+                                Max depth: {{ balanceSummary?.byLevel?.length || 0 }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card stat-card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon bg-purple bg-opacity-10 rounded-3 p-3 me-3">
+                            <i class="bi bi-graph-up fs-3 text-purple"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-1">Today's Volume</h6>
+                            <h3 class="mb-0 fw-bold">{{ formatNumber(todayTransactions) }}</h3>
+                            <small class="text-success">
+                                <i class="bi bi-arrow-up me-1"></i>
+                                +{{ formatNumber(recentTransactions.length - todayTransactions) }} vs yesterday
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card stat-card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon bg-cyan bg-opacity-10 rounded-3 p-3 me-3">
+                            <i class="bi bi-cpu fs-3 text-cyan"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-1">System Health</h6>
+                            <h3 class="mb-0 fw-bold">{{ systemUptime }}</h3>
+                            <small class="text-muted">
+                                <i class="bi bi-lightning me-1"></i>
+                                {{ activeSessions }} active sessions
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-light py-3">
+                    <h5 class="mb-0 fw-semibold">
+                        <i class="bi bi-lightning-charge-fill text-warning me-2"></i>
+                        Quick Actions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-lg-3 col-md-6">
+                            <button
+                                class="btn btn-outline-primary w-100 h-100 d-flex flex-column align-items-center justify-content-center py-3"
+                                (click)="quickAction('create-admin')">
+                                <i class="bi bi-person-plus-fill display-6 mb-2"></i>
+                                <span>Create Admin</span>
+                            </button>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <button
+                                class="btn btn-outline-success w-100 h-100 d-flex flex-column align-items-center justify-content-center py-3"
+                                (click)="quickAction('credit-balance')">
+                                <i class="bi bi-cash-coin display-6 mb-2"></i>
+                                <span>Credit Balance</span>
+                            </button>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <button
+                                class="btn btn-outline-info w-100 h-100 d-flex flex-column align-items-center justify-content-center py-3"
+                                (click)="quickAction('view-reports')">
+                                <i class="bi bi-file-earmark-bar-graph display-6 mb-2"></i>
+                                <span>View Reports</span>
+                            </button>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <button
+                                class="btn btn-outline-secondary w-100 h-100 d-flex flex-column align-items-center justify-content-center py-3"
+                                (click)="quickAction('system-settings')">
+                                <i class="bi bi-gear-wide-connected display-6 mb-2"></i>
+                                <span>System Settings</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row mb-4">
+        <!-- User Growth Chart -->
+        <div class="col-xl-6 mb-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center py-3">
+                    <h5 class="mb-0 fw-semibold">
+                        <i class="bi bi-graph-up-arrow text-primary me-2"></i>
+                        User Growth
+                    </h5>
+                    <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-secondary" [class.active]="selectedPeriod === 'day'"
+                            (click)="setPeriod('day')">Day</button>
+                        <button class="btn btn-outline-secondary" [class.active]="selectedPeriod === 'week'"
+                            (click)="setPeriod('week')">Week</button>
+                        <button class="btn btn-outline-secondary" [class.active]="selectedPeriod === 'month'"
+                            (click)="setPeriod('month')">Month</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <canvas id="userGrowthChart" style="height: 300px;"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transaction Volume Chart -->
+        <div class="col-xl-6 mb-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center py-3">
+                    <h5 class="mb-0 fw-semibold">
+                        <i class="bi bi-bar-chart-steps text-success me-2"></i>
+                        Transaction Volume
+                    </h5>
+                    <span class="badge bg-success">Today</span>
+                </div>
+                <div class="card-body">
+                    <canvas id="transactionVolumeChart" style="height: 300px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Distribution Charts Row -->
+    <div class="row mb-4">
+        <!-- User Distribution by Level -->
+        <div class="col-xl-6 mb-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-light py-3">
+                    <h5 class="mb-0 fw-semibold">
+                        <i class="bi bi-pie-chart-fill text-info me-2"></i>
+                        User Distribution by Level
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="userDistributionChart" style="height: 300px;"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Balance Distribution by Role -->
+        <div class="col-xl-6 mb-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-light py-3">
+                    <h5 class="mb-0 fw-semibold">
+                        <i class="bi bi-cake2-fill text-warning me-2"></i>
+                        Balance Distribution by Role
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="balanceDistributionChart" style="height: 300px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Users and Transactions -->
+    <div class="row">
+        <!-- Recent Users -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center py-3">
+                    <h5 class="mb-0 fw-semibold">
+                        <i class="bi bi-people-fill text-primary me-2"></i>
+                        Recent Users
+                    </h5>
+                    <button class="btn btn-sm btn-outline-primary" (click)="viewAllUsers()">
+                        View All
+                    </button>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="ps-4">User</th>
+                                    <th>Role</th>
+                                    <th>Level</th>
+                                    <th>Balance</th>
+                                    <th>Status</th>
+                                    <th class="pe-4">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let user of users.slice(0, 5)">
+                                    <td class="ps-4">
+                                        <div class="d-flex align-items-center">
+                                            <div class="user-avatar-sm bg-primary bg-opacity-10 rounded-2 me-2">
+                                                <i class="bi bi-person-fill text-primary"></i>
+                                            </div>
+                                            <div>
+                                                <span class="fw-semibold d-block">{{ user.username }}</span>
+                                                <small class="text-muted">{{ user.email }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge" [ngClass]="getRoleBadgeClass(user.role)">
+                                            {{ user.role | titlecase }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-secondary">Level {{ user.level }}</span>
+                                    </td>
+                                    <td class="fw-semibold">{{ formatCurrency(user.balance) }}</td>
+                                    <td>
+                                        <span class="badge" [ngClass]="getStatusBadgeClass(user.isActive)">
+                                            {{ user.isActive ? 'Active' : 'Inactive' }}
+                                        </span>
+                                    </td>
+                                    <td class="pe-4">
+                                        <div class="btn-group btn-group-sm">
+                                            <button class="btn btn-outline-primary" (click)="editUser(user._id)"
+                                                title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="btn btn-outline-success"
+                                                (click)="viewUserHierarchy(user._id)" title="View Hierarchy">
+                                                <i class="bi bi-diagram-3"></i>
+                                            </button>
+                                            <button class="btn btn-outline-warning"
+                                                (click)="toggleUserStatus(user._id, user.isActive)"
+                                                [title]="user.isActive ? 'Deactivate' : 'Activate'">
+                                                <i class="bi" [class.bi-pause-circle]="user.isActive"
+                                                    [class.bi-play-circle]="!user.isActive"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="users.length === 0">
+                                    <td colspan="6" class="text-center py-4">
+                                        <p class="text-muted mb-0">No users found</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Transactions -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center py-3">
+                    <h5 class="mb-0 fw-semibold">
+                        <i class="bi bi-arrow-left-right text-success me-2"></i>
+                        Recent Transactions
+                    </h5>
+                    <button class="btn btn-sm btn-outline-success" (click)="viewAllTransactions()">
+                        View All
+                    </button>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="ps-4">Date</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                    <th>From/To</th>
+                                    <th>Status</th>
+                                    <th class="pe-4">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let transaction of recentTransactions.slice(0, 5)">
+                                    <td class="ps-4">
+                                        <small>{{ formatDate(transaction.createdAt) }}</small>
+                                    </td>
+                                    <td>
+                                        <span class="badge" [ngClass]="getTransactionBadgeClass(transaction.type)">
+                                            {{ transaction.type | titlecase }}
+                                        </span>
+                                    </td>
+                                    <td [ngClass]="{'text-success': transaction.type === 'credit' || transaction.type === 'recharge', 
+                                  'text-danger': transaction.type === 'debit'}">
+                                        <span class="fw-semibold">
+                                            {{ transaction.type === 'debit' ? '-' : '+' }}{{
+                                            formatCurrency(transaction.amount) }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <small>
+                                            {{ transaction.type === 'credit' ? transaction.sender.username :
+                                            transaction.receiver.username || 'System' }}
+                                        </small>
+                                    </td>
+                                    <td>
+                                        <span class="badge" [ngClass]="{
+                      'bg-success': transaction.status === 'completed',
+                      'bg-warning': transaction.status === 'pending',
+                      'bg-danger': transaction.status === 'failed'
+                    }">
+                                            {{ transaction.status | titlecase }}
+                                        </span>
+                                    </td>
+                                    <td class="pe-4">
+                                        <button class="btn btn-sm btn-outline-info"
+                                            (click)="viewTransactionDetails(transaction)">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="recentTransactions.length === 0">
+                                    <td colspan="6" class="text-center py-4">
+                                        <p class="text-muted mb-0">No transactions found</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Users and System Alerts -->
+    <div class="row">
+        <!-- Top Users by Balance -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center py-3">
+                    <h5 class="mb-0 fw-semibold">
+                        <i class="bi bi-trophy-fill text-warning me-2"></i>
+                        Top Users by Balance
+                    </h5>
+                    <span class="badge bg-warning text-dark">This Month</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="ps-4">#</th>
+                                    <th>User</th>
+                                    <th>Role</th>
+                                    <th>Level</th>
+                                    <th class="pe-4">Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let user of topUsers.slice(0, 5); let i = index">
+                                    <td class="ps-4">
+                                        <span class="fw-bold" [ngClass]="{
+                      'text-warning': i === 0,
+                      'text-secondary': i === 1,
+                      'text-danger': i === 2
+                    }">#{{ i + 1 }}</span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="user-avatar-sm bg-primary bg-opacity-10 rounded-2 me-2">
+                                                <i class="bi bi-person-fill text-primary"></i>
+                                            </div>
+                                            <span class="fw-semibold">{{ user.username }}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge" [ngClass]="getRoleBadgeClass(user.role)">
+                                            {{ user.role | titlecase }}
+                                        </span>
+                                    </td>
+                                    <td>Level {{ user.level }}</td>
+                                    <td class="pe-4 fw-bold text-success">{{ formatCurrency(user.balance) }}</td>
+                                </tr>
+                                <tr *ngIf="topUsers.length === 0">
+                                    <td colspan="5" class="text-center py-4">
+                                        <p class="text-muted mb-0">No data available</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Alerts -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center py-3">
+                    <h5 class="mb-0 fw-semibold">
+                        <i class="bi bi-bell-fill text-danger me-2"></i>
+                        System Alerts
+                    </h5>
+                    <button class="btn btn-sm btn-outline-danger" (click)="clearAllAlerts()">
+                        Clear All
+                    </button>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <div *ngFor="let alert of alerts"
+                            class="list-group-item list-group-item-action d-flex align-items-start p-3"
+                            [class.unread]="!alert.read" (click)="markAlertAsRead(alert)">
+                            <i class="bi me-3 fs-4" [ngClass]="getAlertIcon(alert.type)"></i>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="fw-semibold" [ngClass]="{
+                    'text-success': alert.type === 'success',
+                    'text-warning': alert.type === 'warning',
+                    'text-danger': alert.type === 'danger',
+                    'text-info': alert.type === 'info'
+                  }">{{ alert.type | titlecase }}</span>
+                                    <small class="text-muted">{{ formatRelativeTime(alert.timestamp) }}</small>
+                                </div>
+                                <p class="mb-0 small">{{ alert.message }}</p>
+                            </div>
+                            <span *ngIf="!alert.read" class="badge bg-primary ms-2">New</span>
+                        </div>
+                        <div *ngIf="alerts.length === 0" class="text-center py-4">
+                            <i class="bi bi-check-circle-fill text-success display-4 mb-3"></i>
+                            <p class="text-muted mb-0">No new alerts</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-light py-2">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="small text-muted">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Click on alert to mark as read
+                        </span>
+                        <a href="javascript:void(0)" class="small text-decoration-none">View All</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Information Footer -->
+    <div class="row mt-2">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-body py-3">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-info-circle-fill text-primary me-2"></i>
+                                <span class="small text-muted">
+                                    System is running normally • Last updated: {{ formatDate(currentDate) }} •
+                                    API Latency: {{ apiLatency }} • Server Load: {{ serverLoad }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-md-end">
+                            <span class="badge bg-success me-2">v2.0.0</span>
+                            <span class="badge bg-info">Production</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

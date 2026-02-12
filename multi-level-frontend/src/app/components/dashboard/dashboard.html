@@ -1,0 +1,313 @@
+<div class="dashboard-container">
+  <!-- Header -->
+  <div class="dashboard-header mb-4">
+    <div class="row align-items-center">
+      <div class="col-md-8">
+        <h1 class="display-6 fw-bold mb-2">
+          <i class="bi bi-speedometer2 me-2"></i>
+          {{ getWelcomeMessage() }}, {{ currentUser?.username }}!
+        </h1>
+        <p class="text-muted mb-0">
+          <span class="badge" [ngClass]="getUserRoleBadge()">
+            {{ currentUser?.role | titlecase }}
+          </span>
+          • Level {{ currentUser?.level }} • Last login: 
+          {{ currentUser?.lastLogin | date:'medium' }}
+        </p>
+      </div>
+      <div class="col-md-4 text-end">
+        <button class="btn btn-outline-primary" (click)="refreshDashboard()">
+          <i class="bi bi-arrow-clockwise me-1"></i> Refresh
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="row mb-4">
+    <!-- Balance Card -->
+    <div class="col-md-3 mb-3">
+      <div class="card stat-card bg-primary text-white h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="card-subtitle mb-2 opacity-75">Current Balance</h6>
+              <h2 class="card-title mb-0">{{ formatCurrency(balance) }}</h2>
+              <p class="card-text small mt-2">
+                <i class="bi bi-wallet2 me-1"></i>
+                Available for transfers
+              </p>
+            </div>
+            <div class="display-4 opacity-25">
+              <i class="bi bi-cash-stack"></i>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer bg-dark bg-opacity-25">
+          <a routerLink="/transfer" class="btn btn-light btn-sm w-100">
+            <i class="bi bi-send me-1"></i> Transfer Balance
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Downline Stats -->
+    <div class="col-md-3 mb-3">
+      <div class="card stat-card bg-success text-white h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="card-subtitle mb-2 opacity-75">Direct Downline</h6>
+              <h2 class="card-title mb-0">{{ downlineStats.directChildren }}</h2>
+              <p class="card-text small mt-2">
+                <i class="bi bi-people me-1"></i>
+                Users at your next level
+              </p>
+            </div>
+            <div class="display-4 opacity-25">
+              <i class="bi bi-people-fill"></i>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer bg-dark bg-opacity-25">
+          <a routerLink="/downline" class="btn btn-light btn-sm w-100">
+            <i class="bi bi-eye me-1"></i> View Network
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Network -->
+    <div class="col-md-3 mb-3">
+      <div class="card stat-card bg-info text-white h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="card-subtitle mb-2 opacity-75">Total Network</h6>
+              <h2 class="card-title mb-0">{{ downlineStats.totalDownline }}</h2>
+              <p class="card-text small mt-2">
+                <i class="bi bi-diagram-3 me-1"></i>
+                Complete downline size
+              </p>
+            </div>
+            <div class="display-4 opacity-25">
+              <i class="bi bi-diagram-3-fill"></i>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer bg-dark bg-opacity-25">
+          <a routerLink="/create-user" class="btn btn-light btn-sm w-100">
+            <i class="bi bi-person-plus me-1"></i> Add User
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Level Info -->
+    <div class="col-md-3 mb-3">
+      <div class="card stat-card bg-warning text-dark h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="card-subtitle mb-2 opacity-75">Your Position</h6>
+              <h2 class="card-title mb-0">Level {{ currentUser?.level }}</h2>
+              <p class="card-text small mt-2">
+                <i class="bi bi-ladder me-1"></i>
+                Parent: {{ currentUser?.parentId || 'None' }}
+              </p>
+            </div>
+            <div class="display-4 opacity-25">
+              <i class="bi bi-stack"></i>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer bg-dark bg-opacity-25">
+          <a routerLink="/profile" class="btn btn-dark btn-sm w-100">
+            <i class="bi bi-person-circle me-1"></i> Profile
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">
+            <i class="bi bi-lightning-charge text-warning me-2"></i>
+            Quick Actions
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-lg-2 col-md-4 col-6">
+              <a routerLink="/transfer" class="btn btn-outline-primary w-100 h-100 d-flex flex-column align-items-center justify-content-center py-3">
+                <i class="bi bi-send display-6 mb-2"></i>
+                <span>Transfer</span>
+              </a>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6">
+              <a routerLink="/create-user" class="btn btn-outline-success w-100 h-100 d-flex flex-column align-items-center justify-content-center py-3">
+                <i class="bi bi-person-plus display-6 mb-2"></i>
+                <span>Add User</span>
+              </a>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6">
+              <a routerLink="/downline" class="btn btn-outline-info w-100 h-100 d-flex flex-column align-items-center justify-content-center py-3">
+                <i class="bi bi-diagram-3 display-6 mb-2"></i>
+                <span>Network</span>
+              </a>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6">
+              <a routerLink="/statement" class="btn btn-outline-warning w-100 h-100 d-flex flex-column align-items-center justify-content-center py-3">
+                <i class="bi bi-receipt display-6 mb-2"></i>
+                <span>Statement</span>
+              </a>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6">
+              <a routerLink="/profile" class="btn btn-outline-secondary w-100 h-100 d-flex flex-column align-items-center justify-content-center py-3">
+                <i class="bi bi-person-badge display-6 mb-2"></i>
+                <span>Profile</span>
+              </a>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6" *ngIf="currentUser?.role === 'admin' || currentUser?.role === 'owner'">
+              <a routerLink="/admin" class="btn btn-outline-danger w-100 h-100 d-flex flex-column align-items-center justify-content-center py-3">
+                <i class="bi bi-shield-check display-6 mb-2"></i>
+                <span>Admin</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Transactions & User Info -->
+  <div class="row">
+    <div class="col-lg-8 mb-4">
+      <div class="card">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">
+            <i class="bi bi-clock-history text-primary me-2"></i>
+            Recent Transactions
+          </h5>
+          <a routerLink="/statement" class="btn btn-sm btn-outline-primary">
+            View All
+          </a>
+        </div>
+        <div class="card-body">
+          <div  class="text-center py-5">
+            
+          </div>
+          
+          <div >
+            <div *ngIf="recentTransactions.length === 0" class="text-center py-5">
+              <i class="bi bi-receipt display-1 text-muted mb-3"></i>
+              <p class="text-muted">No transactions found</p>
+            </div>
+            
+            <div *ngIf="recentTransactions.length > 0">
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Type</th>
+                      <th>Amount</th>
+                      <th>Details</th>
+                      <th>Date</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let transaction of recentTransactions">
+                      <td>
+                        <span class="badge d-flex align-items-center" [ngClass]="{
+                          'bg-success': transaction.type === 'credit',
+                          'bg-danger': transaction.type === 'debit',
+                          'bg-warning text-dark': transaction.type === 'recharge',
+                          'bg-info': transaction.type === 'commission'
+                        }">
+                          <i class="bi me-1" [class]="getTransactionIcon(transaction.type)"></i>
+                          {{ transaction.type | titlecase }}
+                        </span>
+                      </td>
+                      <td class="fw-bold" [ngClass]="getTransactionTypeClass(transaction.type)">
+                        {{ formatCurrency(transaction.amount) }}
+                      </td>
+                      <td>
+                        <small class="d-block">
+                          {{ transaction.type === 'credit' ? 'From' : 'To' }}:
+                          {{ transaction.type === 'credit' ? transaction.sender.username : transaction.receiver.username }}
+                        </small>
+                        <small class="text-muted">{{ transaction.description }}</small>
+                      </td>
+                      <td>
+                        <small>{{ transaction.createdAt | date:'short' }}</small>
+                      </td>
+                      <td>
+                        <span class="badge bg-success">Completed</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- User Info Panel -->
+    <div class="col-lg-4">
+      <div class="card">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">
+            <i class="bi bi-person-circle text-info me-2"></i>
+            Account Information
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="text-center mb-4">
+            <div class="avatar-circle mb-3">
+              <i class="bi bi-person display-4"></i>
+            </div>
+            <h5>{{ currentUser?.username }}</h5>
+            <p class="text-muted mb-0">{{ currentUser?.email }}</p>
+          </div>
+          
+          <div class="list-group list-group-flush">
+            <div class="list-group-item d-flex justify-content-between">
+              <span>User ID</span>
+              <span class="text-muted">{{ currentUser?._id?.substring(0, 8) }}...</span>
+            </div>
+            <div class="list-group-item d-flex justify-content-between">
+              <span>Account Level</span>
+              <span class="badge bg-primary">Level {{ currentUser?.level }}</span>
+            </div>
+            <div class="list-group-item d-flex justify-content-between">
+              <span>Member Since</span>
+              <span class="text-muted">{{ currentUser?.createdAt | date:'mediumDate' }}</span>
+            </div>
+            <div class="list-group-item d-flex justify-content-between">
+              <span>Network Size</span>
+              <span class="text-muted">{{ downlineStats.totalDownline }} users</span>
+            </div>
+            <div class="list-group-item d-flex justify-content-between">
+              <span>Account Status</span>
+              <span class="badge bg-success">Active</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="d-grid">
+            <a routerLink="/profile" class="btn btn-outline-primary">
+              <i class="bi bi-pencil-square me-1"></i> Manage Profile
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

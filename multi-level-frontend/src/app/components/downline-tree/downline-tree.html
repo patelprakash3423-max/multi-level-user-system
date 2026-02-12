@@ -1,0 +1,528 @@
+<div class="downline-tree-container">
+  <!-- Header Section -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-gradient-primary text-white py-3">
+          <div class="d-flex flex-wrap align-items-center justify-content-between">
+            <div class="d-flex align-items-center mb-2 mb-md-0">
+              <i class="bi bi-diagram-3-fill fs-1 me-3"></i>
+              <div>
+                <h2 class="mb-0 fw-bold">Your Downline Network</h2>
+                <p class="mb-0 opacity-75">
+                  View and manage your complete hierarchical structure
+                </p>
+              </div>
+            </div>
+            <div class="d-flex gap-2">
+              <button class="btn btn-light btn-sm" (click)="loadDownline()">
+                <i class="bi bi-arrow-clockwise me-1"></i> Refresh
+              </button>
+              <button class="btn btn-light btn-sm" (click)="exportNetwork()">
+                <i class="bi bi-download me-1"></i> Export
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="row mb-4">
+    <div class="col-xl-2 col-lg-4 col-md-6 mb-3">
+      <div class="card stat-card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="stat-icon bg-primary bg-opacity-10 rounded-3 p-3 me-3">
+              <i class="bi bi-people-fill fs-3 text-primary"></i>
+            </div>
+            <div>
+              <h6 class="text-muted mb-1">Total Network</h6>
+              <h3 class="mb-0 fw-bold">{{ totalDownline }}</h3>
+              <small class="text-success">
+                <i class="bi bi-arrow-up me-1"></i>
+                {{ totalLevels }} Levels
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-2 col-lg-4 col-md-6 mb-3">
+      <div class="card stat-card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="stat-icon bg-success bg-opacity-10 rounded-3 p-3 me-3">
+              <i class="bi bi-cash-stack fs-3 text-success"></i>
+            </div>
+            <div>
+              <h6 class="text-muted mb-1">Total Balance</h6>
+              <h3 class="mb-0 fw-bold">{{ formatCurrency(totalBalance) }}</h3>
+              <small class="text-muted">Network funds</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-2 col-lg-4 col-md-6 mb-3">
+      <div class="card stat-card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="stat-icon bg-info bg-opacity-10 rounded-3 p-3 me-3">
+              <i class="bi bi-person-check-fill fs-3 text-info"></i>
+            </div>
+            <div>
+              <h6 class="text-muted mb-1">Active Users</h6>
+              <h3 class="mb-0 fw-bold">{{ activeUsers }}</h3>
+              <small class="text-success">
+                {{ ((activeUsers / totalDownline) * 100 | number:'1.0-1') || 0 }}% active
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-2 col-lg-4 col-md-6 mb-3">
+      <div class="card stat-card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="stat-icon bg-warning bg-opacity-10 rounded-3 p-3 me-3">
+              <i class="bi bi-person-dash-fill fs-3 text-warning"></i>
+            </div>
+            <div>
+              <h6 class="text-muted mb-1">Inactive Users</h6>
+              <h3 class="mb-0 fw-bold">{{ inactiveUsers }}</h3>
+              <small class="text-danger">
+                {{ ((inactiveUsers / totalDownline) * 100 | number:'1.0-1') || 0 }}% inactive
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-2 col-lg-4 col-md-6 mb-3">
+      <div class="card stat-card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="stat-icon bg-secondary bg-opacity-10 rounded-3 p-3 me-3">
+              <i class="bi bi-layers-fill fs-3 text-secondary"></i>
+            </div>
+            <div>
+              <h6 class="text-muted mb-1">Network Depth</h6>
+              <h3 class="mb-0 fw-bold">{{ totalLevels }}</h3>
+              <small class="text-muted">Maximum levels</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-2 col-lg-4 col-md-6 mb-3">
+      <div class="card stat-card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="stat-icon bg-danger bg-opacity-10 rounded-3 p-3 me-3">
+              <i class="bi bi-graph-up-arrow fs-3 text-danger"></i>
+            </div>
+            <div>
+              <h6 class="text-muted mb-1">Growth Rate</h6>
+              <h3 class="mb-0 fw-bold">+{{ downlineTree.length }}</h3>
+              <small class="text-success">Direct downline</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Level Distribution Chart -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-light py-3">
+          <h5 class="mb-0 fw-semibold">
+            <i class="bi bi-bar-chart-steps me-2 text-primary"></i>
+            Level Distribution
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="level-distribution">
+            <div *ngFor="let level of (levelDistribution | keyvalue)" class="level-bar-item mb-3">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="fw-semibold">Level {{ level.key }}</span>
+                <span class="badge" [ngClass]="getLevelClass(+level.key)">
+                  {{ level.value }} users
+                </span>
+              </div>
+              <div class="progress" style="height: 10px;">
+                <div 
+                  class="progress-bar" 
+                  [ngClass]="'level-progress-' + level.key"
+                  [style.width.%]="(level.value / totalDownline) * 100"
+                  role="progressbar">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters and Controls -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card shadow-sm border-0">
+        <div class="card-body">
+          <div class="row g-3">
+            <!-- Search -->
+            <div class="col-lg-4">
+              <div class="input-group">
+                <span class="input-group-text bg-light border-end-0">
+                  <i class="bi bi-search"></i>
+                </span>
+                <input
+                  type="text"
+                  class="form-control border-start-0 ps-0"
+                  placeholder="Search by username or email..."
+                  [(ngModel)]="searchTerm"
+                  (ngModelChange)="searchDownline()"
+                >
+                <button 
+                  *ngIf="searchTerm" 
+                  class="btn btn-outline-secondary" 
+                  type="button"
+                  (click)="searchTerm = ''; searchDownline()">
+                  <i class="bi bi-x"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Level Filter -->
+            <div class="col-lg-3">
+              <select class="form-select" [(ngModel)]="selectedLevel" (ngModelChange)="filterByLevel(selectedLevel)">
+                <option [value]="null">All Levels</option>
+                <option *ngFor="let level of (levelDistribution | keyvalue)" [value]="+level.key">
+                  Level {{ level.key }} ({{ level.value }} users)
+                </option>
+              </select>
+            </div>
+
+            <!-- Sort By -->
+            <div class="col-lg-3">
+              <div class="d-flex gap-2">
+                <select class="form-select" [(ngModel)]="sortBy" (ngModelChange)="applyFilters()">
+                  <option value="username">Sort by Username</option>
+                  <option value="email">Sort by Email</option>
+                  <option value="level">Sort by Level</option>
+                  <option value="balance">Sort by Balance</option>
+                  <option value="downlineCount">Sort by Downline</option>
+                </select>
+                <button 
+                  class="btn btn-outline-secondary" 
+                  (click)="sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'; applyFilters()">
+                  <i class="bi" [class.bi-sort-alpha-down]="sortOrder === 'asc'" [class.bi-sort-alpha-up]="sortOrder === 'desc'"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- View Mode -->
+            <div class="col-lg-2">
+              <div class="btn-group w-100" role="group">
+                <button 
+                  type="button" 
+                  class="btn" 
+                  [class.btn-primary]="viewMode === 'tree'" 
+                  [class.btn-outline-secondary]="viewMode !== 'tree'"
+                  (click)="viewMode = 'tree'">
+                  <i class="bi bi-diagram-3"></i>
+                </button>
+                <button 
+                  type="button" 
+                  class="btn" 
+                  [class.btn-primary]="viewMode === 'grid'" 
+                  [class.btn-outline-secondary]="viewMode !== 'grid'"
+                  (click)="viewMode = 'grid'">
+                  <i class="bi bi-grid-3x3-gap-fill"></i>
+                </button>
+                <button 
+                  type="button" 
+                  class="btn" 
+                  [class.btn-primary]="viewMode === 'list'" 
+                  [class.btn-outline-secondary]="viewMode !== 'list'"
+                  (click)="viewMode = 'list'">
+                  <i class="bi bi-list-ul"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="row mt-3">
+            <div class="col-12">
+              <div class="d-flex flex-wrap gap-2">
+                <button class="btn btn-sm btn-outline-primary" (click)="expandAll()">
+                  <i class="bi bi-arrows-expand me-1"></i> Expand All
+                </button>
+                <button class="btn btn-sm btn-outline-secondary" (click)="collapseAll()">
+                  <i class="bi bi-arrows-collapse me-1"></i> Collapse All
+                </button>
+                <button class="btn btn-sm btn-outline-success" (click)="expandLevel(1)">
+                  <i class="bi bi-layers me-1"></i> Level 1
+                </button>
+                <button class="btn btn-sm btn-outline-info" (click)="expandLevel(2)">
+                  <i class="bi bi-layers me-1"></i> Level 2
+                </button>
+                <button class="btn btn-sm btn-outline-warning" (click)="expandLevel(3)">
+                  <i class="bi bi-layers me-1"></i> Level 3
+                </button>
+                <button class="btn btn-sm btn-outline-danger" (click)="clearFilters()">
+                  <i class="bi bi-eraser me-1"></i> Clear Filters
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="text-center py-5">
+    <div class="spinner-border text-primary" style="width: 4rem; height: 4rem;" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <h5 class="mt-4 text-muted">Loading your network...</h5>
+    <p class="text-muted">Building hierarchical structure</p>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && filteredTree.length === 0" class="text-center py-5">
+    <div class="empty-state">
+      <div class="empty-state-icon mb-4">
+        <i class="bi bi-diagram-3 display-1 text-muted"></i>
+      </div>
+      <h4 class="fw-semibold mb-3">No Downline Users Found</h4>
+      <p class="text-muted mb-4">
+        You haven't created any downline users yet.<br>
+        Start building your network by adding your first user.
+      </p>
+      <div class="d-flex justify-content-center gap-3">
+        <a routerLink="/create-user" class="btn btn-primary btn-lg">
+          <i class="bi bi-person-plus me-2"></i>
+          Create First User
+        </a>
+        <button class="btn btn-outline-secondary btn-lg" (click)="loadDownline()">
+          <i class="bi bi-arrow-clockwise me-2"></i>
+          Refresh
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tree View -->
+  <div *ngIf="!isLoading && filteredTree.length > 0">
+    <!-- Tree Mode -->
+    <div *ngIf="viewMode === 'tree'" class="tree-view-container">
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+          <div class="tree-view">
+            <div *ngFor="let node of filteredTree" class="tree-node-root">
+              <app-tree-node
+                [node]="node"
+                [level]="1"
+                [expanded]="isNodeExpanded(node._id)"
+                (toggle)="toggleNode(node)"
+                (viewDetails)="viewUserDetails(node._id)"
+                (transfer)="transferToUser(node._id)"
+                (changePassword)="changePassword(node._id, node.username)"
+              ></app-tree-node>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grid Mode -->
+    <div *ngIf="viewMode === 'grid'" class="grid-view-container">
+      <div class="row g-4">
+        <div *ngFor="let node of paginatedNodes" class="col-xl-3 col-lg-4 col-md-6">
+          <div class="card user-card h-100 shadow-sm border-0">
+            <div class="card-body text-center p-4">
+              <div class="position-relative">
+                <div class="user-avatar mx-auto mb-3" [ngClass]="'bg-' + getRandomColor(node.username) + '-subtle'">
+                  <span class="avatar-text">{{ getInitials(node.username) }}</span>
+                </div>
+                <span class="position-absolute top-0 end-0 badge" [ngClass]="getLevelClass(node.level || 1)">
+                  Lv {{ node.level }}
+                </span>
+              </div>
+              
+              <h5 class="fw-semibold mb-1">{{ node.username }}</h5>
+              <p class="text-muted small mb-2">{{ node.email }}</p>
+              
+              <div class="d-flex justify-content-center gap-2 mb-3">
+                <span class="badge" [ngClass]="getRoleBadgeClass(node.role)">
+                  {{ node.role | titlecase }}
+                </span>
+                <span class="badge" [ngClass]="getStatusBadgeClass(node.isActive)">
+                  {{ getStatusText(node.isActive) }}
+                </span>
+              </div>
+              
+              <div class="user-stats bg-light rounded-3 p-3 mb-3">
+                <div class="d-flex justify-content-between mb-2">
+                  <span class="text-muted small">Balance</span>
+                  <span class="fw-semibold">{{ formatCurrency(node.balance || 0) }}</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <span class="text-muted small">Downline</span>
+                  <span class="fw-semibold">{{ node.downlineCount || 0 }} users</span>
+                </div>
+              </div>
+              
+              <div class="d-flex justify-content-center gap-2">
+                <button class="btn btn-sm btn-outline-primary" (click)="viewUserDetails(node._id)">
+                  <i class="bi bi-eye"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-success" (click)="transferToUser(node._id)">
+                  <i class="bi bi-send"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-warning" (click)="changePassword(node._id, node.username)">
+                  <i class="bi bi-key"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Pagination -->
+      <div *ngIf="totalPages > 1" class="d-flex justify-content-center mt-4">
+        <nav aria-label="User pagination">
+          <ul class="pagination">
+            <li class="page-item" [class.disabled]="currentPage === 1">
+              <a class="page-link" (click)="currentPage > 1 && changePage(currentPage - 1)" href="javascript:void(0)">
+                Previous
+              </a>
+            </li>
+            <li *ngFor="let page of [].constructor(totalPages); let i = index" class="page-item" [class.active]="currentPage === i + 1">
+              <a class="page-link" (click)="changePage(i + 1)" href="javascript:void(0)">{{ i + 1 }}</a>
+            </li>
+            <li class="page-item" [class.disabled]="currentPage === totalPages">
+              <a class="page-link" (click)="currentPage < totalPages && changePage(currentPage + 1)" href="javascript:void(0)">
+                Next
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+    <!-- List Mode -->
+    <div *ngIf="viewMode === 'list'" class="list-view-container">
+      <div class="card shadow-sm border-0">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="bg-light">
+              <tr>
+                <th class="ps-4">User</th>
+                <th>Level</th>
+                <th>Role</th>
+                <th>Balance</th>
+                <th>Downline</th>
+                <th>Status</th>
+                <th>Joined</th>
+                <th class="pe-4">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let node of paginatedNodes">
+                <td class="ps-4">
+                  <div class="d-flex align-items-center">
+                    <div class="user-avatar-sm bg-primary bg-opacity-10 rounded-2 me-2">
+                      <i class="bi bi-person-fill text-primary"></i>
+                    </div>
+                    <div>
+                      <span class="fw-semibold d-block">{{ node.username }}</span>
+                      <small class="text-muted">{{ node.email }}</small>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <span class="badge" [ngClass]="getLevelClass(node.level || 1)">
+                    Level {{ node.level }}
+                  </span>
+                </td>
+                <td>
+                  <span class="badge" [ngClass]="getRoleBadgeClass(node.role)">
+                    {{ node.role | titlecase }}
+                  </span>
+                </td>
+                <td class="fw-semibold">{{ formatCurrency(node.balance || 0) }}</td>
+                <td>
+                  <span class="badge bg-info bg-opacity-10 text-info">
+                    {{ node.downlineCount || 0 }} users
+                  </span>
+                </td>
+                <td>
+                  <span class="badge" [ngClass]="getStatusBadgeClass(node.isActive)">
+                    {{ getStatusText(node.isActive) }}
+                  </span>
+                </td>
+                <td>
+                  <small class="text-muted">{{ formatDate(node.createdAt) }}</small>
+                </td>
+                <td class="pe-4">
+                  <div class="btn-group btn-group-sm">
+                    <button class="btn btn-outline-primary" (click)="viewUserDetails(node._id)" title="View Details">
+                      <i class="bi bi-eye"></i>
+                    </button>
+                    <button class="btn btn-outline-success" (click)="transferToUser(node._id)" title="Transfer">
+                      <i class="bi bi-send"></i>
+                    </button>
+                    <button class="btn btn-outline-warning" (click)="changePassword(node._id, node.username)" title="Change Password">
+                      <i class="bi bi-key"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <!-- Pagination -->
+        <div *ngIf="totalPages > 1" class="card-footer bg-white d-flex justify-content-between align-items-center">
+          <div>
+            <small class="text-muted">
+              Showing {{ (currentPage - 1) * itemsPerPage + 1 }} - 
+              {{ min(currentPage * itemsPerPage, totalDownline) }} of {{ totalDownline }} users
+            </small>
+          </div>
+          <nav aria-label="User pagination">
+            <ul class="pagination pagination-sm mb-0">
+              <li class="page-item" [class.disabled]="currentPage === 1">
+                <a class="page-link" (click)="currentPage > 1 && changePage(currentPage - 1)" href="javascript:void(0)">
+                  Previous
+                </a>
+              </li>
+              <li *ngFor="let page of [].constructor(totalPages); let i = index" class="page-item" [class.active]="currentPage === i + 1">
+                <a class="page-link" (click)="changePage(i + 1)" href="javascript:void(0)">{{ i + 1 }}</a>
+              </li>
+              <li class="page-item" [class.disabled]="currentPage === totalPages">
+                <a class="page-link" (click)="currentPage < totalPages && changePage(currentPage + 1)" href="javascript:void(0)">
+                  Next
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

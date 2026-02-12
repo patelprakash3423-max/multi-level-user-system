@@ -1,0 +1,94 @@
+<div class="hierarchy-node" [style.margin-left.px]="(level - 1) * 30">
+  <div class="node-wrapper" [ngClass]="{ 'has-children': hasChildren(), 'expanded': expanded }">
+    <!-- Node Content -->
+    <div class="node-content" [ngClass]="getLevelClass(level)">
+      <div class="d-flex align-items-center justify-content-between">
+        <!-- Left Section -->
+        <div class="d-flex align-items-center flex-grow-1">
+          <!-- Toggle Button -->
+          <button 
+            *ngIf="hasChildren()"
+            class="btn btn-sm btn-toggle me-2"
+            [class.expanded]="expanded"
+            (click)="onToggle()"
+            title="Toggle children"
+          >
+            <i class="bi" [class]="getToggleIcon()"></i>
+          </button>
+          
+          <!-- Node Icon -->
+          <div class="node-icon me-2">
+            <div class="user-avatar" [ngClass]="'bg-' + getAvatarColor(node.username) + '-subtle'">
+              <span class="avatar-text">{{ getInitials(node.username) }}</span>
+            </div>
+          </div>
+          
+          <!-- Node Info -->
+          <div class="node-info">
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <span class="fw-bold">{{ node.username }}</span>
+              <span class="badge" [ngClass]="getRoleBadgeClass(node.role)">
+                {{ node.role | titlecase }}
+              </span>
+              <span class="badge bg-secondary">Level {{ node.level }}</span>
+              <span class="badge" [ngClass]="getStatusBadgeClass(node.isActive)">
+                {{ getStatusText(node.isActive) }}
+              </span>
+            </div>
+            <div class="node-meta">
+              <small *ngIf="showEmails" class="text-muted me-3">
+                <i class="bi bi-envelope me-1"></i> {{ node.email }}
+              </small>
+              <small *ngIf="showBalances" class="text-muted me-3">
+                <i class="bi bi-cash-stack me-1"></i> {{ formatCurrency(node.balance || 0) }}
+              </small>
+              <small class="text-muted">
+                <i class="bi bi-people me-1"></i> {{ node.downlineCount || 0 }} downline
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="node-actions">
+          <div class="btn-group btn-group-sm">
+            <button class="btn btn-outline-primary" (click)="viewDetails.emit(node._id)" title="View Details">
+              <i class="bi bi-eye"></i>
+            </button>
+            <button class="btn btn-outline-success" (click)="credit.emit(node._id)" title="Credit Balance">
+              <i class="bi bi-cash-coin"></i>
+            </button>
+            <button class="btn btn-outline-warning" (click)="changePassword.emit(node)" title="Change Password">
+              <i class="bi bi-key"></i>
+            </button>
+            <button 
+              class="btn" 
+              [class.btn-outline-danger]="node.isActive" 
+              [class.btn-outline-success]="!node.isActive"
+              (click)="toggleStatus.emit(node)"
+              [title]="node.isActive ? 'Deactivate' : 'Activate'">
+              <i class="bi" [class.bi-pause-circle]="node.isActive" [class.bi-play-circle]="!node.isActive"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Children Nodes -->
+    <div *ngIf="expanded && hasChildren()" class="node-children">
+      <app-hierarchy-node
+        *ngFor="let child of node.children"
+        [node]="child"
+        [level]="level + 1"
+        [expanded]="expanded"
+        [showBalances]="showBalances"
+        [showEmails]="showEmails"
+        (toggle)="toggle.emit($event)"
+        (viewDetails)="viewDetails.emit($event)"
+        (credit)="credit.emit($event)"
+        (changePassword)="changePassword.emit($event)"
+        (toggleStatus)="toggleStatus.emit($event)"
+      ></app-hierarchy-node>
+    </div>
+  </div>
+</div>

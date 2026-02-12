@@ -1,0 +1,132 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+  <div class="container-fluid">
+    <a class="navbar-brand" routerLink="/">
+      <i class="bi bi-shield-lock me-2"></i>
+      Multi-Level User System
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <!-- Left Side Navigation -->
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/dashboard" routerLinkActive="active">
+            <i class="bi bi-speedometer2 me-1"></i> Dashboard
+          </a>
+        </li>
+
+        <!-- Show these links only when logged in -->
+        <ng-container *ngIf="currentUser">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/create-user" routerLinkActive="active">
+              <i class="bi bi-person-plus me-1"></i> Create User
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/transfer" routerLinkActive="active">
+              <i class="bi bi-send me-1"></i> Transfer
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/downline" routerLinkActive="active">
+              <i class="bi bi-diagram-3 me-1"></i> Network
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/statement" routerLinkActive="active">
+              <i class="bi bi-receipt me-1"></i> Statement
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/profile" routerLinkActive="active">
+              <i class="bi bi-person-circle me-1"></i> Profile
+            </a>
+          </li>
+
+          <!-- 🔴 OWNER RECHARGE LINK - YAHAN PE RAKHO (Sahi jagah) -->
+          <li class="nav-item" *ngIf="currentUser.role === 'owner'">
+            <a class="nav-link" routerLink="/recharge" routerLinkActive="active">
+              <i class="bi bi-cash-stack me-1"></i> Recharge
+            </a>
+          </li>
+
+          <!-- Admin Links -->
+          <ng-container *ngIf="currentUser.role === 'admin' || currentUser.role === 'owner'">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                <i class="bi bi-shield-check me-1"></i> Admin
+              </a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a class="dropdown-item" routerLink="/admin">
+                    <i class="bi bi-speedometer me-2"></i> Dashboard
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" routerLink="/admin/users">
+                    <i class="bi bi-people me-2"></i> All Users
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" routerLink="/admin/hierarchy">
+                    <i class="bi bi-diagram-3 me-2"></i> Hierarchy
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" routerLink="/admin/credit">
+                    <i class="bi bi-cash-coin me-2"></i> Credit Balance
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ng-container>
+        </ng-container>
+      </ul>
+
+      <!-- Right side - User Menu -->
+      <ul class="navbar-nav">
+        <ng-container *ngIf="currentUser; else loginLinks">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+              <span class="badge" [ngClass]="getUserRoleBadge()">
+                {{ currentUser.role | titlecase }}
+              </span>
+              {{ currentUser.username }}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li>
+                <a class="dropdown-item" routerLink="/profile">
+                  <i class="bi bi-person-circle me-2"></i> Profile
+                </a>
+              </li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+              <li>
+                <button class="dropdown-item text-danger" (click)="logout()">
+                  <i class="bi bi-box-arrow-right me-2"></i> Logout
+                </button>
+              </li>
+            </ul>
+          </li>
+        </ng-container>
+
+        <ng-template #loginLinks>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/login">
+              <i class="bi bi-box-arrow-in-right me-1"></i> Login
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/register">
+              <i class="bi bi-person-plus me-1"></i> Register
+            </a>
+          </li>
+        </ng-template>
+      </ul>
+    </div>
+  </div>
+</nav>

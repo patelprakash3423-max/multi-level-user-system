@@ -1,0 +1,705 @@
+<div class="admin-users-container">
+  <!-- Header Section -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-gradient-admin text-white py-3">
+          <div class="d-flex flex-wrap align-items-center justify-content-between">
+            <div class="d-flex align-items-center mb-2 mb-md-0">
+              <i class="bi bi-people-fill fs-1 me-3"></i>
+              <div>
+                <h2 class="mb-0 fw-bold">User Management</h2>
+                <p class="mb-0 opacity-75">
+                  View, edit, and manage all system users
+                </p>
+              </div>
+            </div>
+            <div class="d-flex gap-2">
+              <button class="btn btn-light btn-sm" (click)="createNewUser()">
+                <i class="bi bi-person-plus-fill me-1"></i> Add User
+              </button>
+              <div class="dropdown">
+                <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                  <i class="bi bi-download me-1"></i> Export
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                  <li><a class="dropdown-item" href="javascript:void(0)" (click)="exportUsers('csv')">
+                    <i class="bi bi-file-earmark-spreadsheet me-2"></i> Export as CSV
+                  </a></li>
+                  <li><a class="dropdown-item" href="javascript:void(0)" (click)="exportUsers('pdf')">
+                    <i class="bi bi-file-earmark-pdf me-2"></i> Export as PDF
+                  </a></li>
+                </ul>
+              </div>
+              <button class="btn btn-light btn-sm" (click)="loadUsers()">
+                <i class="bi bi-arrow-clockwise me-1"></i> Refresh
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="row mb-4">
+    <div class="col-xl-2 col-lg-4 col-md-6 mb-3">
+      <div class="card stat-card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="stat-icon bg-primary bg-opacity-10 rounded-3 p-3 me-3">
+              <i class="bi bi-people-fill fs-3 text-primary"></i>
+            </div>
+            <div>
+              <h6 class="text-muted mb-1">Total Users</h6>
+              <h3 class="mb-0 fw-bold">{{ totalItems }}</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-2 col-lg-4 col-md-6 mb-3">
+      <div class="card stat-card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="stat-icon bg-success bg-opacity-10 rounded-3 p-3 me-3">
+              <i class="bi bi-person-check-fill fs-3 text-success"></i>
+            </div>
+            <div>
+              <h6 class="text-muted mb-1">Active</h6>
+              <h3 class="mb-0 fw-bold">{{ activeUsersCount }}</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-2 col-lg-4 col-md-6 mb-3">
+      <div class="card stat-card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="stat-icon bg-secondary bg-opacity-10 rounded-3 p-3 me-3">
+              <i class="bi bi-person-dash-fill fs-3 text-secondary"></i>
+            </div>
+            <div>
+              <h6 class="text-muted mb-1">Inactive</h6>
+              <h3 class="mb-0 fw-bold">{{ inactiveUsersCount }}</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-2 col-lg-4 col-md-6 mb-3">
+      <div class="card stat-card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="stat-icon bg-warning bg-opacity-10 rounded-3 p-3 me-3">
+              <i class="bi bi-shield-fill fs-3 text-warning"></i>
+            </div>
+            <div>
+              <h6 class="text-muted mb-1">Admins</h6>
+              <h3 class="mb-0 fw-bold">{{ adminCount }}</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-2 col-lg-4 col-md-6 mb-3">
+      <div class="card stat-card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="stat-icon bg-danger bg-opacity-10 rounded-3 p-3 me-3">
+              <i class="bi bi-crown-fill fs-3 text-danger"></i>
+            </div>
+            <div>
+              <h6 class="text-muted mb-1">Owners</h6>
+              <h3 class="mb-0 fw-bold">{{ ownerCount }}</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-2 col-lg-4 col-md-6 mb-3">
+      <div class="card stat-card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="stat-icon bg-info bg-opacity-10 rounded-3 p-3 me-3">
+              <i class="bi bi-cash-stack fs-3 text-info"></i>
+            </div>
+            <div>
+              <h6 class="text-muted mb-1">Total Balance</h6>
+              <h3 class="mb-0 fw-bold">{{ formatCurrency(totalBalance) }}</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search and Filters -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card shadow-sm border-0">
+        <div class="card-body">
+          <div class="row g-3">
+            <!-- Search -->
+            <div class="col-lg-5">
+              <div class="input-group">
+                <span class="input-group-text bg-light border-end-0">
+                  <i class="bi bi-search"></i>
+                </span>
+                <input
+                  type="text"
+                  class="form-control border-start-0 ps-0"
+                  placeholder="Search by username, email, or role..."
+                  [(ngModel)]="searchTerm"
+                  (keyup.enter)="onSearch()"
+                >
+                <button *ngIf="searchTerm" class="btn btn-outline-secondary" type="button" (click)="clearSearch()">
+                  <i class="bi bi-x"></i>
+                </button>
+                <button class="btn btn-primary" type="button" (click)="onSearch()">
+                  Search
+                </button>
+              </div>
+            </div>
+
+            <!-- Filter Toggle -->
+            <div class="col-lg-3">
+              <button class="btn btn-outline-secondary w-100" (click)="toggleFilters()">
+                <i class="bi bi-funnel me-2"></i>
+                Filters
+                <span class="badge bg-primary ms-2" *ngIf="selectedRole !== 'all' || selectedStatus !== 'all' || selectedLevel !== 'all' || dateRange !== 'all'">
+                  Active
+                </span>
+              </button>
+            </div>
+
+            <!-- Sort Info -->
+            <div class="col-lg-4">
+              <div class="d-flex align-items-center justify-content-end h-100">
+                <span class="text-muted me-2">
+                  <i class="bi bi-sort-down me-1"></i>
+                  Sorted by: {{ sortBy | titlecase }} ({{ sortOrder }})
+                </span>
+                <button class="btn btn-sm btn-outline-secondary" (click)="clearFilters()">
+                  <i class="bi bi-eraser me-1"></i> Clear
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Advanced Filters -->
+          <div class="row mt-3" *ngIf="showFilters">
+            <div class="col-12">
+              <div class="filters-panel bg-light p-3 rounded-3">
+                <div class="row g-3">
+                  <div class="col-md-2">
+                    <label class="form-label fw-semibold">Role</label>
+                    <select class="form-select" [(ngModel)]="selectedRole" (ngModelChange)="applyFilters()">
+                      <option value="all">All Roles</option>
+                      <option value="user">User</option>
+                      <option value="admin">Admin</option>
+                      <option value="owner">Owner</option>
+                    </select>
+                  </div>
+
+                  <div class="col-md-2">
+                    <label class="form-label fw-semibold">Status</label>
+                    <select class="form-select" [(ngModel)]="selectedStatus" (ngModelChange)="applyFilters()">
+                      <option value="all">All Status</option>
+                      <option value="active">Active</option>
+                      <option value="inactive">Inactive</option>
+                    </select>
+                  </div>
+
+                  <div class="col-md-2">
+                    <label class="form-label fw-semibold">Level</label>
+                    <select class="form-select" [(ngModel)]="selectedLevel" (ngModelChange)="applyFilters()">
+                      <option value="all">All Levels</option>
+                      <option *ngFor="let level of levelOptions" [value]="level">Level {{ level }}</option>
+                    </select>
+                  </div>
+
+                  <div class="col-md-3">
+                    <label class="form-label fw-semibold">Date Range</label>
+                    <div class="btn-group w-100" role="group">
+                      <button type="button" class="btn" [class.btn-primary]="dateRange === 'today'" [class.btn-outline-secondary]="dateRange !== 'today'" (click)="setDateRange('today')">
+                        Today
+                      </button>
+                      <button type="button" class="btn" [class.btn-primary]="dateRange === 'week'" [class.btn-outline-secondary]="dateRange !== 'week'" (click)="setDateRange('week')">
+                        Week
+                      </button>
+                      <button type="button" class="btn" [class.btn-primary]="dateRange === 'month'" [class.btn-outline-secondary]="dateRange !== 'month'" (click)="setDateRange('month')">
+                        Month
+                      </button>
+                      <button type="button" class="btn" [class.btn-primary]="dateRange === 'custom'" [class.btn-outline-secondary]="dateRange !== 'custom'" (click)="setDateRange('custom')">
+                        Custom
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="col-md-3" *ngIf="dateRange === 'custom'">
+                    <label class="form-label fw-semibold">&nbsp;</label>
+                    <div class="d-flex gap-2">
+                      <input type="date" class="form-control" [(ngModel)]="startDate" (change)="applyCustomDateRange()" placeholder="Start Date">
+                      <input type="date" class="form-control" [(ngModel)]="endDate" (change)="applyCustomDateRange()" placeholder="End Date">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bulk Actions Bar -->
+  <div class="row mb-3" *ngIf="selectedUsers.size > 0">
+    <div class="col-12">
+      <div class="bulk-actions-bar bg-primary bg-opacity-10 p-3 rounded-3 d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center">
+          <i class="bi bi-check-circle-fill text-primary fs-4 me-3"></i>
+          <span class="fw-semibold">{{ selectedUsers.size }} user(s) selected</span>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-sm btn-success" (click)="bulkActivate()">
+            <i class="bi bi-play-circle me-1"></i> Activate
+          </button>
+          <button class="btn btn-sm btn-warning" (click)="bulkDeactivate()">
+            <i class="bi bi-pause-circle me-1"></i> Deactivate
+          </button>
+          <button class="btn btn-sm btn-info" (click)="bulkChangeRole()">
+            <i class="bi bi-shield me-1"></i> Change Role
+          </button>
+          <button class="btn btn-sm btn-outline-secondary" (click)="clearSelection()">
+            <i class="bi bi-x-circle me-1"></i> Clear
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Users Table -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+          <!-- Loading State -->
+
+          <!-- Empty State -->
+          <div *ngIf="filteredUsers.length === 0" class="text-center py-5">
+            <div class="empty-state">
+              <i class="bi bi-people display-1 text-muted mb-3"></i>
+              <h4 class="fw-semibold mb-3">No Users Found</h4>
+              <p class="text-muted mb-4">
+                No users match your current filters.<br>
+                Try adjusting your search criteria or clear filters.
+              </p>
+              <button class="btn btn-primary" (click)="clearFilters()">
+                <i class="bi bi-eraser me-2"></i> Clear Filters
+              </button>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div *ngIf="filteredUsers.length > 0" class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="bg-light">
+                <tr>
+                  <th width="40">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" [checked]="selectAll" (change)="toggleSelectAll()">
+                    </div>
+                  </th>
+                  <th>
+                    <a href="javascript:void(0)" class="sort-link" (click)="setSortBy('username')">
+                      User
+                      <i class="bi ms-1" [ngClass]="getSortIcon('username')"></i>
+                    </a>
+                  </th>
+                  <th>
+                    <a href="javascript:void(0)" class="sort-link" (click)="setSortBy('role')">
+                      Role
+                      <i class="bi ms-1" [ngClass]="getSortIcon('role')"></i>
+                    </a>
+                  </th>
+                  <th>
+                    <a href="javascript:void(0)" class="sort-link" (click)="setSortBy('level')">
+                      Level
+                      <i class="bi ms-1" [ngClass]="getSortIcon('level')"></i>
+                    </a>
+                  </th>
+                  <th>
+                    <a href="javascript:void(0)" class="sort-link" (click)="setSortBy('balance')">
+                      Balance
+                      <i class="bi ms-1" [ngClass]="getSortIcon('balance')"></i>
+                    </a>
+                  </th>
+                  <th>
+                    <a href="javascript:void(0)" class="sort-link" (click)="setSortBy('downlineCount')">
+                      Downline
+                      <i class="bi ms-1" [ngClass]="getSortIcon('downlineCount')"></i>
+                    </a>
+                  </th>
+                  <th>
+                    <a href="javascript:void(0)" class="sort-link" (click)="setSortBy('createdAt')">
+                      Joined
+                      <i class="bi ms-1" [ngClass]="getSortIcon('createdAt')"></i>
+                    </a>
+                  </th>
+                  <th>
+                    <a href="javascript:void(0)" class="sort-link" (click)="setSortBy('lastLogin')">
+                      Last Login
+                      <i class="bi ms-1" [ngClass]="getSortIcon('lastLogin')"></i>
+                    </a>
+                  </th>
+                  <th>Status</th>
+                  <th class="text-end">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let user of filteredUsers | slice: (currentPage-1)*itemsPerPage : currentPage*itemsPerPage">
+                  <td>
+                    <div class="form-check">
+                      <input 
+                        class="form-check-input" 
+                        type="checkbox" 
+                        [checked]="selectedUsers.has(user._id)"
+                        (change)="toggleUserSelection(user._id)"
+                        [disabled]="user.role === 'owner'">
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="user-avatar me-2" [ngClass]="'bg-' + getAvatarColor(user.username) + '-subtle'">
+                        <span class="avatar-text">{{ getInitials(user.username) }}</span>
+                      </div>
+                      <div>
+                        <span class="fw-semibold d-block">{{ user.username }}</span>
+                        <small class="text-muted">{{ user.email }}</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="badge" [ngClass]="getRoleBadgeClass(user.role)">
+                      {{ user.role | titlecase }}
+                    </span>
+                  </td>
+                  <td>
+                    <span class="badge bg-secondary">Level {{ user.level }}</span>
+                  </td>
+                  <td class="fw-semibold">{{ formatCurrency(user.balance) }}</td>
+                  <td>
+                    <span class="badge bg-info bg-opacity-10 text-info">
+                      {{ user.downlineCount || 0 }}
+                    </span>
+                  </td>
+                  <td>
+                    <small>{{ formatDate(user.createdAt) }}</small>
+                  </td>
+                  <td>
+                    <small>{{ formatDate(user.lastLogin) }}</small>
+                  </td>
+                  <td>
+                    <span class="badge" [ngClass]="getStatusBadgeClass(user.isActive)">
+                      {{ user.isActive ? 'Active' : 'Inactive' }}
+                    </span>
+                  </td>
+                  <td class="text-end">
+                    <div class="btn-group btn-group-sm">
+                      <button class="btn btn-outline-primary" (click)="viewUserDetails(user)" title="View Details">
+                        <i class="bi bi-eye"></i>
+                      </button>
+                      <button class="btn btn-outline-success" (click)="editUser(user)" title="Edit User">
+                        <i class="bi bi-pencil"></i>
+                      </button>
+                      <button class="btn btn-outline-info" (click)="viewUserHierarchy(user._id)" title="View Hierarchy">
+                        <i class="bi bi-diagram-3"></i>
+                      </button>
+                      <button class="btn btn-outline-warning" (click)="creditUserBalance(user)" title="Credit Balance">
+                        <i class="bi bi-cash-stack"></i>
+                      </button>
+                      <button class="btn btn-outline-secondary" (click)="changeUserPassword(user)" title="Change Password">
+                        <i class="bi bi-key"></i>
+                      </button>
+                      <button 
+                        class="btn" 
+                        [class.btn-outline-danger]="user.isActive" 
+                        [class.btn-outline-success]="!user.isActive"
+                        (click)="toggleUserStatus(user)"
+                        [title]="user.isActive ? 'Deactivate' : 'Activate'">
+                        <i class="bi" [class.bi-pause-circle]="user.isActive" [class.bi-play-circle]="!user.isActive"></i>
+                      </button>
+                      <button 
+                        *ngIf="user.role !== 'owner'"
+                        class="btn btn-outline-danger" 
+                        (click)="deleteUser(user)" 
+                        title="Delete">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="card-footer bg-white d-flex flex-wrap justify-content-between align-items-center py-3" *ngIf="filteredUsers.length > 0">
+          <div class="mb-2 mb-sm-0">
+            <small class="text-muted">
+              Showing {{ ((currentPage - 1) * itemsPerPage) + 1 }} - 
+              {{ min(currentPage * itemsPerPage, totalItems) }} of {{ totalItems }} users
+            </small>
+          </div>
+          
+          <nav aria-label="User pagination">
+            <ul class="pagination pagination-sm mb-0">
+              <li class="page-item" [class.disabled]="currentPage === 1">
+                <a class="page-link" (click)="currentPage > 1 && changePage(currentPage - 1)" href="javascript:void(0)">
+                  <i class="bi bi-chevron-left"></i>
+                </a>
+              </li>
+              
+              <li *ngFor="let page of [].constructor(totalPages); let i = index" 
+                  class="page-item" 
+                  [class.active]="currentPage === i + 1">
+                <a class="page-link" (click)="changePage(i + 1)" href="javascript:void(0)">
+                  {{ i + 1 }}
+                </a>
+              </li>
+              
+              <li class="page-item" [class.disabled]="currentPage === totalPages">
+                <a class="page-link" (click)="currentPage < totalPages && changePage(currentPage + 1)" href="javascript:void(0)">
+                  <i class="bi bi-chevron-right"></i>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Details Modal -->
+  <div class="modal fade" [class.show]="showUserDetails" [style.display]="showUserDetails ? 'block' : 'none'" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content" *ngIf="selectedUser">
+        <div class="modal-header bg-gradient-admin text-white">
+          <h5 class="modal-title">
+            <i class="bi bi-person-badge me-2"></i>
+            User Details
+          </h5>
+          <button type="button" class="btn-close btn-close-white" (click)="closeUserDetails()"></button>
+        </div>
+        
+        <div class="modal-body">
+          <div class="row">
+            <!-- User Profile Header -->
+            <div class="col-12 text-center mb-4">
+              <div class="user-avatar-lg mx-auto mb-3" [ngClass]="'bg-' + getAvatarColor(selectedUser.username) + '-subtle'">
+                <span class="avatar-text">{{ getInitials(selectedUser.username) }}</span>
+              </div>
+              <h3 class="fw-bold mb-1">{{ selectedUser.username }}</h3>
+              <p class="text-muted mb-2">{{ selectedUser.email }}</p>
+              <div class="d-flex justify-content-center gap-2">
+                <span class="badge" [ngClass]="getRoleBadgeClass(selectedUser.role)">
+                  {{ selectedUser.role | titlecase }}
+                </span>
+                <span class="badge bg-secondary">Level {{ selectedUser.level }}</span>
+                <span class="badge" [ngClass]="getStatusBadgeClass(selectedUser.isActive)">
+                  {{ selectedUser.isActive ? 'Active' : 'Inactive' }}
+                </span>
+              </div>
+            </div>
+            
+            <!-- User Statistics -->
+            <div class="col-md-6">
+              <div class="detail-card bg-light p-3 rounded-3 mb-3">
+                <h6 class="text-muted mb-3">
+                  <i class="bi bi-info-circle me-2"></i>
+                  Account Information
+                </h6>
+                <div class="d-flex justify-content-between mb-2">
+                  <span class="text-muted">User ID:</span>
+                  <span class="fw-semibold">{{ selectedUser._id }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                  <span class="text-muted">Member Since:</span>
+                  <span class="fw-semibold">{{ formatDateTime(selectedUser.createdAt) }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                  <span class="text-muted">Last Login:</span>
+                  <span class="fw-semibold">{{ formatDateTime(selectedUser.lastLogin) }}</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <span class="text-muted">Parent ID:</span>
+                  <span class="fw-semibold">{{ selectedUser.parentId || 'None' }}</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="detail-card bg-light p-3 rounded-3 mb-3">
+                <h6 class="text-muted mb-3">
+                  <i class="bi bi-graph-up me-2"></i>
+                  Network Statistics
+                </h6>
+                <div class="d-flex justify-content-between mb-2">
+                  <span class="text-muted">Current Balance:</span>
+                  <span class="fw-bold text-success">{{ formatCurrency(selectedUser.balance) }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                  <span class="text-muted">Downline Count:</span>
+                  <span class="fw-semibold">{{ selectedUser.downlineCount || 0 }} users</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                  <span class="text-muted">Network Level:</span>
+                  <span class="fw-semibold">Level {{ selectedUser.level }}</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <span class="text-muted">Account Status:</span>
+                  <span class="badge" [ngClass]="getStatusBadgeClass(selectedUser.isActive)">
+                    {{ selectedUser.isActive ? 'Active' : 'Inactive' }}
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="col-12">
+              <div class="bg-light p-3 rounded-3">
+                <h6 class="text-muted mb-3">
+                  <i class="bi bi-lightning-charge me-2"></i>
+                  Quick Actions
+                </h6>
+                <div class="d-flex flex-wrap gap-2">
+                  <button class="btn btn-sm btn-outline-primary" (click)="editUser(selectedUser); closeUserDetails()">
+                    <i class="bi bi-pencil me-1"></i> Edit User
+                  </button>
+                  <button class="btn btn-sm btn-outline-success" (click)="creditUserBalance(selectedUser); closeUserDetails()">
+                    <i class="bi bi-cash-coin me-1"></i> Credit Balance
+                  </button>
+                  <button class="btn btn-sm btn-outline-info" (click)="viewUserHierarchy(selectedUser._id); closeUserDetails()">
+                    <i class="bi bi-diagram-3 me-1"></i> View Network
+                  </button>
+                  <button class="btn btn-sm btn-outline-warning" (click)="changeUserPassword(selectedUser); closeUserDetails()">
+                    <i class="bi bi-key me-1"></i> Change Password
+                  </button>
+                  <button class="btn btn-sm" [class.btn-outline-danger]="selectedUser.isActive" [class.btn-outline-success]="!selectedUser.isActive" 
+                          (click)="toggleUserStatus(selectedUser); closeUserDetails()">
+                    <i class="bi" [class.bi-pause-circle]="selectedUser.isActive" [class.bi-play-circle]="!selectedUser.isActive"></i>
+                    {{ selectedUser.isActive ? 'Deactivate' : 'Activate' }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" (click)="closeUserDetails()">
+            <i class="bi bi-x-circle me-2"></i> Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit User Modal -->
+  <div class="modal fade" [class.show]="showEditModal" [style.display]="showEditModal ? 'block' : 'none'" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">
+            <i class="bi bi-pencil-square me-2"></i>
+            Edit User
+          </h5>
+          <button type="button" class="btn-close btn-close-white" (click)="showEditModal = false"></button>
+        </div>
+        
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Email Address</label>
+              <input type="email" class="form-control" [(ngModel)]="editForm.email" [ngModelOptions]="{standalone: true}">
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Role</label>
+              <select class="form-select" [(ngModel)]="editForm.role" [ngModelOptions]="{standalone: true}">
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+                <option value="owner">Owner</option>
+              </select>
+            </div>
+            
+            <div class="mb-3">
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" [(ngModel)]="editForm.isActive" [ngModelOptions]="{standalone: true}">
+                <label class="form-check-label fw-semibold">Active Account</label>
+              </div>
+            </div>
+          </form>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" (click)="showEditModal = false">
+            Cancel
+          </button>
+          <button type="button" class="btn btn-primary" (click)="saveUserEdit()">
+            <i class="bi bi-check-circle me-2"></i> Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Change Password Modal -->
+  <div class="modal fade" [class.show]="showPasswordModal" [style.display]="showPasswordModal ? 'block' : 'none'" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-warning text-dark">
+          <h5 class="modal-title">
+            <i class="bi bi-key-fill me-2"></i>
+            Change Password
+          </h5>
+          <button type="button" class="btn-close" (click)="showPasswordModal = false"></button>
+        </div>
+        
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">New Password</label>
+              <input type="password" class="form-control" [(ngModel)]="passwordForm.newPassword" [ngModelOptions]="{standalone: true}" placeholder="Enter new password">
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Confirm Password</label>
+              <input type="password" class="form-control" [(ngModel)]="passwordForm.confirmPassword" [ngModelOptions]="{standalone: true}" placeholder="Confirm new password">
+            </div>
+          </form>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" (click)="showPasswordModal = false">
+            Cancel
+          </button>
+          <button type="button" class="btn btn-warning" (click)="savePassword()">
+            <i class="bi bi-check-circle me-2"></i> Update Password
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Backdrops -->
+  <div class="modal-backdrop fade show" *ngIf="showUserDetails || showEditModal || showPasswordModal" (click)="closeModals()"></div>
+</div>

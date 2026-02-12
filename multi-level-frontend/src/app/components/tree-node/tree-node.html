@@ -1,0 +1,100 @@
+<div class="tree-node" [style.margin-left.px]="(level - 1) * 30">
+  <div class="node-container" [ngClass]="{ 'has-children': hasChildren(), 'expanded': expanded }">
+    <!-- Node Content -->
+    <div class="node-content" [ngClass]="getLevelClass(level)">
+      <div class="d-flex align-items-center justify-content-between">
+        <!-- Left Section -->
+        <div class="d-flex align-items-center flex-grow-1">
+          <!-- Toggle Button -->
+          <button 
+            *ngIf="hasChildren()"
+            class="btn btn-sm btn-toggle me-2"
+            [class.expanded]="expanded"
+            (click)="onToggle()"
+            title="Toggle children"
+          >
+            <i class="bi" [class]="getToggleIcon()"></i>
+          </button>
+          
+          <!-- Node Icon -->
+          <div class="node-icon me-2">
+            <div class="avatar-circle" [ngClass]="'bg-' + getAvatarColor() + '-subtle'">
+              <span class="avatar-text">{{ getInitials(node.username) }}</span>
+            </div>
+          </div>
+          
+          <!-- Node Info -->
+          <div class="node-info">
+            <div class="d-flex align-items-center gap-2">
+              <span class="fw-semibold">{{ node.username }}</span>
+              <span class="badge" [ngClass]="getRoleBadgeClass(node.role)">
+                {{ node.role | titlecase }}
+              </span>
+              <span class="badge" [ngClass]="getLevelClass(node.level || 1)">
+                Level {{ node.level }}
+              </span>
+              <span class="badge" [ngClass]="getStatusBadgeClass(node.isActive)">
+                {{ getStatusText(node.isActive) }}
+              </span>
+            </div>
+            <div class="node-meta">
+              <small class="text-muted me-3">
+                <i class="bi bi-envelope me-1"></i>
+                {{ node.email }}
+              </small>
+              <small class="text-muted me-3">
+                <i class="bi bi-cash-stack me-1"></i>
+                {{ formatCurrency(node.balance || 0) }}
+              </small>
+              <small class="text-muted">
+                <i class="bi bi-people me-1"></i>
+                {{ node.downlineCount || 0 }} downline
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="node-actions">
+          <div class="btn-group btn-group-sm">
+            <button 
+              class="btn btn-outline-primary" 
+              (click)="onViewDetails()"
+              title="View Details"
+            >
+              <i class="bi bi-eye"></i>
+            </button>
+            <button 
+              class="btn btn-outline-success" 
+              (click)="onTransfer()"
+              title="Transfer Balance"
+            >
+              <i class="bi bi-send"></i>
+            </button>
+            <button 
+              class="btn btn-outline-warning" 
+              (click)="onChangePassword()"
+              title="Change Password"
+            >
+              <i class="bi bi-key"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Children Nodes -->
+    <div *ngIf="expanded && hasChildren()" class="node-children">
+      <app-tree-node
+        *ngFor="let child of node.children"
+        [node]="child"
+        [level]="level + 1"
+        [expanded]="expanded"
+        (toggle)="toggle.emit($event)"
+        (viewDetails)="viewDetails.emit($event)"
+        (transfer)="transfer.emit($event)"
+        (changePassword)="changePassword.emit($event)"
+      ></app-tree-node>
+    </div>
+  </div>
+</div>

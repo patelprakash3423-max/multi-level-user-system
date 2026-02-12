@@ -1,0 +1,421 @@
+<div class="transfer-container">
+  <div class="row">
+    <!-- Main Transfer Section -->
+    <div class="col-lg-8 mb-4">
+      <!-- Header Card -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-primary text-white py-3">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-send-fill fs-1 me-3"></i>
+            <div>
+              <h2 class="mb-0 fw-bold">Transfer Balance</h2>
+              <p class="mb-0 opacity-75">
+                Send funds to your direct downline users
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Balance Card -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body p-4">
+          <div class="row align-items-center">
+            <div class="col-md-6">
+              <div class="d-flex align-items-center">
+                <div class="balance-icon bg-primary bg-opacity-10 p-3 rounded-3 me-3">
+                  <i class="bi bi-wallet2 fs-2 text-primary"></i>
+                </div>
+                <div>
+                  <small class="text-muted d-block">Available Balance</small>
+
+                  <!-- ⏳ LOADING STATE -->
+                  <div *ngIf="!balanceLoaded">
+                    <div class="spinner-border spinner-border-sm text-primary"></div>
+                  </div>
+
+                  <!-- 💰 BALANCE DISPLAY -->
+                  <h2 *ngIf="balanceLoaded" class="mb-0 fw-bold" [ngClass]="{
+              'text-success': currentBalance > 1000,
+              'text-warning': currentBalance > 0 && currentBalance <= 1000,
+              'text-danger': currentBalance <= 0
+            }">
+                    {{ formatCurrency(currentBalance) }}
+                  </h2>
+                  <span *ngIf="balanceLoaded" class="badge" [ngClass]="'bg-' + balanceStatusColor">
+                    {{ balanceStatusText }}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <!-- ... rest of balance card ... -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Transfer Form Card -->
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-4 p-lg-5">
+          <!-- No Downline Alert -->
+          <div *ngIf="!hasDownline" class="alert alert-warning d-flex align-items-center mb-4" role="alert">
+            <i class="bi bi-exclamation-triangle-fill fs-4 me-3"></i>
+            <div>
+              <strong>No Downline Users Found!</strong>
+              <p class="mb-0">You need to create users in your downline before you can transfer balance.</p>
+              <a routerLink="/create-user" class="alert-link">Create a user now</a>
+            </div>
+          </div>
+
+          <!-- Insufficient Balance Alert -->
+          <div *ngIf="!hasSufficientBalance && hasDownline" class="alert alert-danger d-flex align-items-center mb-4"
+            role="alert">
+            <i class="bi bi-exclamation-triangle-fill fs-4 me-3"></i>
+            <div>
+              <strong>Insufficient Balance!</strong>
+              <p class="mb-0">Your current balance is {{ formatCurrency(currentBalance) }}. Please recharge to transfer
+                funds.</p>
+              <a *ngIf="currentUser?.role === 'owner'" routerLink="/recharge" class="alert-link">Recharge now</a>
+            </div>
+          </div>
+
+          <!-- Transfer Form -->
+          <form [formGroup]="transferForm" (ngSubmit)="onSubmit()" *ngIf="hasDownline">
+            <div class="row">
+              <!-- Left Column - Receiver Selection -->
+              <div class="col-md-6">
+                <h5 class="mb-3 fw-semibold">
+                  <i class="bi bi-person-down me-2 text-primary"></i>
+                  Select Receiver
+                </h5>
+
+                <!-- Receiver Dropdown -->
+                <div class="mb-4">
+                  <label for="receiver" class="form-label fw-semibold">
+                    <i class="bi bi-people me-1"></i> Choose User
+                    <span class="text-danger">*</span>
+                  </label>
+
+                  <!-- Search Box -->
+                  <div class="position-relative mb-2">
+                    <div class="input-group">
+                      <span class="input-group-text bg-light">
+                        <i class="bi bi-search"></i>
+                      </span>
+                      <input type="text" class="form-control" placeholder="Search by username or email"
+                        [(ngModel)]="searchTerm" (ngModelChange)="searchDownline()"
+                        [ngModelOptions]="{standalone: true}">
+                    </div>
+
+                    <!-- Search Results -->
+                    <div *ngIf="searchTerm" class="search-results card position-absolute w-100 mt-1"
+                      style="z-index: 1000;">
+                      <div class="list-group list-group-flush">
+                        <button *ngFor="let user of filteredDownline" type="button"
+                          class="list-group-item list-group-item-action d-flex align-items-center"
+                          (click)="selectUser(user)">
+                          <div class="user-avatar bg-primary bg-opacity-10 rounded-2 p-2 me-3">
+                            <i class="bi bi-person-fill text-primary"></i>
+                          </div>
+                          <div class="flex-grow-1">
+                            <div class="fw-semibold">{{ user.username }}</div>
+                            <small class="text-muted">{{ user.email }}</small>
+                          </div>
+                          <span class="badge bg-info">Level {{ user.level }}</span>
+                        </button>
+                        <div *ngIf="filteredDownline.length === 0" class="list-group-item text-center text-muted py-3">
+                          <i class="bi bi-exclamation-circle me-2"></i>
+                          No users found
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Selected User Display -->
+                  <div *ngIf="selectedUser" class="selected-user-card bg-light p-3 rounded-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div class="d-flex align-items-center">
+                        <div class="user-avatar bg-success bg-opacity-10 rounded-2 p-2 me-3">
+                          <i class="bi bi-person-check-fill text-success"></i>
+                        </div>
+                        <div>
+                          <span class="fw-semibold d-block">{{ selectedUser.username }}</span>
+                          <small class="text-muted">{{ selectedUser.email }}</small>
+                        </div>
+                      </div>
+                      <span class="badge bg-success">Level {{ selectedUser.level }}</span>
+                    </div>
+                  </div>
+
+                  <!-- Receiver Select (Hidden but maintained for form control) -->
+                  <select formControlName="receiverId" class="d-none">
+                    <option *ngFor="let user of directDownline" [value]="user._id"></option>
+                  </select>
+
+                  <div *ngIf="isFieldInvalid('receiverId')" class="invalid-feedback d-block">
+                    Please select a receiver
+                  </div>
+                </div>
+
+                <!-- Quick Select Users -->
+                <div *ngIf="directDownline.length > 0" class="mb-4">
+                  <label class="form-label fw-semibold">Quick Select</label>
+                  <div class="d-flex flex-wrap gap-2">
+                    <button *ngFor="let user of directDownline.slice(0, 3)" type="button"
+                      class="btn btn-outline-primary btn-sm" (click)="selectUser(user)">
+                      <i class="bi bi-person me-1"></i>
+                      {{ user.username }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Column - Amount & Transfer -->
+              <div class="col-md-6">
+                <h5 class="mb-3 fw-semibold">
+                  <i class="bi bi-cash-coin me-2 text-primary"></i>
+                  Transfer Details
+                </h5>
+
+                <!-- Amount Field -->
+                <div class="mb-4">
+                  <label for="amount" class="form-label fw-semibold">
+                    <i class="bi bi-currency-dollar me-1"></i> Amount
+                    <span class="text-danger">*</span>
+                  </label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light">$</span>
+                    <input type="number" id="amount" formControlName="amount" class="form-control form-control-lg"
+                      placeholder="Enter amount" [class.is-invalid]="isFieldInvalid('amount')" min="1"
+                      [max]="maxAmount">
+                  </div>
+                  <div *ngIf="isFieldInvalid('amount')" class="invalid-feedback d-block">
+                    {{ getErrorMessage('amount') }}
+                  </div>
+
+                  <!-- Quick Amount Buttons -->
+                  <div class="quick-amounts mt-2">
+                    <small class="text-muted d-block mb-2">Quick amounts:</small>
+                    <div class="d-flex flex-wrap gap-2">
+                      <button *ngFor="let amount of quickAmounts" type="button" class="btn btn-outline-secondary btn-sm"
+                        (click)="setQuickAmount(amount)" [disabled]="amount > maxAmount">
+                        ${{ amount }}
+                      </button>
+                      <button type="button" class="btn btn-outline-secondary btn-sm" (click)="setQuickAmount(maxAmount)"
+                        [disabled]="maxAmount <= 0">
+                        Max
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Description Field -->
+                <div class="mb-4">
+                  <label for="description" class="form-label fw-semibold">
+                    <i class="bi bi-chat-text me-1"></i> Description (Optional)
+                  </label>
+                  <input type="text" id="description" formControlName="description" class="form-control"
+                    placeholder="What's this for?" maxlength="100">
+                  <div class="d-flex justify-content-between mt-1">
+                    <small class="text-muted">Max 100 characters</small>
+                    <small class="text-muted">
+                      {{ transferForm.get('description')?.value?.length || 0 }}/100
+                    </small>
+                  </div>
+                </div>
+
+                <!-- Transfer Summary -->
+                <div *ngIf="selectedUser && transferForm.get('amount')?.value"
+                  class="transfer-summary bg-light p-3 rounded-3 mb-4">
+                  <h6 class="fw-semibold mb-3">Transfer Summary</h6>
+                  <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">From:</span>
+                    <span class="fw-semibold">{{ currentUser?.username }}</span>
+                  </div>
+                  <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">To:</span>
+                    <span class="fw-semibold">{{ selectedUser.username }}</span>
+                  </div>
+                  <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Amount:</span>
+                    <span class="fw-bold text-primary">
+                      {{ formatCurrency(transferForm.get('amount')?.value) }}
+                    </span>
+                  </div>
+                  <div class="d-flex justify-content-between pt-2 border-top">
+                    <span class="text-muted">Balance after transfer:</span>
+                    <span class="fw-bold" [ngClass]="{
+                      'text-success': currentBalance - transferForm.get('amount')?.value > 0,
+                      'text-danger': currentBalance - transferForm.get('amount')?.value <= 0
+                    }">
+                      {{ formatCurrency(currentBalance - transferForm.get('amount')?.value) }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="d-flex justify-content-between align-items-center mt-5 pt-3 border-top">
+              <button type="button" class="btn btn-outline-secondary btn-lg" routerLink="/dashboard">
+                <i class="bi bi-arrow-left me-2"></i>
+                Cancel
+              </button>
+
+              <div class="d-flex gap-2">
+                <button type="button" class="btn btn-outline-secondary" (click)="transferForm.reset()">
+                  <i class="bi bi-eraser me-2"></i>
+                  Reset
+                </button>
+
+                <button type="submit" class="btn btn-primary btn-lg px-5"
+                  [disabled]="transferForm.invalid || isLoading || !hasSufficientBalance || !hasDownline">
+                  <span *ngIf="!isLoading">
+                    <i class="bi bi-send me-2"></i>
+                    Transfer
+                  </span>
+                  <span *ngIf="isLoading">
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                    Processing...
+                  </span>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Sidebar - Recent Transactions & Info -->
+    <div class="col-lg-4">
+      <!-- Recent Transfers Card -->
+    <div class="card shadow-sm border-0 mb-4">
+  <div class="card-header bg-light py-3">
+    <h5 class="mb-0 fw-semibold">
+      <i class="bi bi-clock-history me-2 text-primary"></i>
+      Recent Transfers
+    </h5>
+  </div>
+  <div class="card-body p-0">
+    
+    <!-- ⏳ LOADING STATE -->
+    <div *ngIf="!transactionsLoaded" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="text-muted mt-2">Loading transactions...</p>
+    </div>
+    
+    <!-- 📭 EMPTY STATE -->
+    <div *ngIf="transactionsLoaded && recentTransactions.length === 0" class="text-center py-5">
+      <i class="bi bi-arrow-left-right display-4 text-muted mb-3"></i>
+      <p class="text-muted mb-0">No recent transfers</p>
+      <small class="text-muted">Your transfer history will appear here</small>
+    </div>
+    
+    <!-- 📋 TRANSACTIONS LIST -->
+    <div *ngIf="transactionsLoaded && recentTransactions.length > 0" class="list-group list-group-flush">
+      <div *ngFor="let transaction of recentTransactions" class="list-group-item border-0 py-3">
+        <div class="d-flex align-items-center">
+          <div class="transaction-icon bg-primary bg-opacity-10 rounded-2 p-2 me-3">
+            <i class="bi bi-arrow-up-circle text-primary"></i>
+          </div>
+          <div class="flex-grow-1">
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="fw-semibold">To: {{ transaction.receiver.username || 'Unknown' }}</span>
+              <span class="fw-bold text-danger">-{{ formatCurrency(transaction.amount) }}</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mt-1">
+              <small class="text-muted">
+                <i class="bi bi-clock me-1"></i>
+                {{ formatDate(transaction.createdAt) }}
+              </small>
+              <span class="badge bg-success bg-opacity-10 text-success">
+                Completed
+              </span>
+            </div>
+            <small *ngIf="transaction.description" class="text-muted d-block mt-1">
+              <i class="bi bi-chat me-1"></i>
+              {{ transaction.description }}
+            </small>
+          </div>
+        </div>
+      </div>
+      
+      <div class="list-group-item border-0 text-center py-3">
+        <a routerLink="/statement" class="text-decoration-none">
+          View All Transactions <i class="bi bi-arrow-right ms-1"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+      <!-- Transfer Tips Card -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-light py-3">
+          <h5 class="mb-0 fw-semibold">
+            <i class="bi bi-lightbulb text-warning me-2"></i>
+            Transfer Tips
+          </h5>
+        </div>
+        <div class="card-body">
+          <ul class="list-unstyled mb-0">
+            <li class="d-flex mb-3">
+              <i class="bi bi-check-circle-fill text-success me-2 flex-shrink-0"></i>
+              <span class="small">You can only transfer to your direct downline users</span>
+            </li>
+            <li class="d-flex mb-3">
+              <i class="bi bi-check-circle-fill text-success me-2 flex-shrink-0"></i>
+              <span class="small">Daily transfer limit: {{ formatCurrency(dailyLimit) }}</span>
+            </li>
+            <li class="d-flex mb-3">
+              <i class="bi bi-check-circle-fill text-success me-2 flex-shrink-0"></i>
+              <span class="small">Maximum per transaction: {{ formatCurrency(transactionLimit) }}</span>
+            </li>
+            <li class="d-flex mb-3">
+              <i class="bi bi-check-circle-fill text-success me-2 flex-shrink-0"></i>
+              <span class="small">Transfers are processed instantly</span>
+            </li>
+            <li class="d-flex">
+              <i class="bi bi-check-circle-fill text-success me-2 flex-shrink-0"></i>
+              <span class="small">Add descriptions to track your transfers better</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Quick Stats Card -->
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-light py-3">
+          <h5 class="mb-0 fw-semibold">
+            <i class="bi bi-graph-up text-success me-2"></i>
+            Today's Stats
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="text-muted">Transfers made:</span>
+            <span class="fw-bold">{{ transferCountToday }}</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="text-muted">Total amount:</span>
+            <span class="fw-bold text-danger">{{ formatCurrency(totalTransferredToday) }}</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="text-muted">Remaining limit:</span>
+            <span class="fw-bold text-success">{{ formatCurrency(getRemainingDailyLimit()) }}</span>
+          </div>
+
+          <hr>
+
+          <div class="d-grid">
+            <a routerLink="/downline" class="btn btn-outline-primary">
+              <i class="bi bi-diagram-3 me-2"></i>
+              View Your Network
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,43 @@
+.login-container {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+.card {
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.captcha-image {
+  min-height: 50px;
+  min-width: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.captcha-img {
+  height: 40px;
+  user-select: none;
+}
+
+.form-control-lg {
+  border-radius: 10px;
+}
+
+.btn-lg {
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.input-group .btn {
+  border-radius: 0 10px 10px 0;
+}
+
+.input-group .form-control {
+  border-radius: 10px 0 0 10px;
+}
+
+.card-header {
+  border-radius: 15px 15px 0 0 !important;
+}

@@ -1,0 +1,375 @@
+<div class="register-container">
+  <div class="row justify-content-center align-items-center min-vh-100 py-4">
+    <div class="col-md-8 col-lg-6 col-xl-5">
+      <div class="card shadow-lg border-0">
+        <!-- Header -->
+        <div class="card-header bg-success text-white text-center py-4">
+          <h2 class="mb-0">
+            <i class="bi bi-person-plus-fill me-2"></i>
+            Create Account
+          </h2>
+          <p class="mb-0 mt-2 small opacity-75">
+            Join the Multi-Level User System
+          </p>
+        </div>
+        
+        <!-- Progress Steps -->
+        <div class="card-body p-4">
+          <div class="progress-steps mb-4">
+            <div class="d-flex justify-content-between">
+              <div class="step-item">
+                <div class="step-circle bg-success text-white">1</div>
+                <span class="step-label">Account</span>
+              </div>
+              <div class="step-line flex-grow-1"></div>
+              <div class="step-item">
+                <div class="step-circle bg-secondary text-white">2</div>
+                <span class="step-label">Details</span>
+              </div>
+              <div class="step-line flex-grow-1"></div>
+              <div class="step-item">
+                <div class="step-circle bg-secondary text-white">3</div>
+                <span class="step-label">Complete</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Registration Form -->
+          <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+            <!-- Username Field -->
+            <div class="mb-3">
+              <label for="username" class="form-label fw-semibold">
+                <i class="bi bi-person-badge me-1"></i> Username
+              </label>
+              <div class="input-group">
+                <span class="input-group-text bg-light">
+                  <i class="bi bi-at"></i>
+                </span>
+                <input
+                  type="text"
+                  id="username"
+                  formControlName="username"
+                  class="form-control"
+                  placeholder="Choose a username"
+                  [class.is-invalid]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched"
+                  (blur)="suggestUsername()"
+                >
+              </div>
+              <div *ngIf="registerForm.get('username')?.invalid && registerForm.get('username')?.touched" 
+                   class="invalid-feedback d-block">
+                {{ getErrorMessage('username') }}
+              </div>
+              <small class="form-text text-muted">
+                <i class="bi bi-info-circle me-1"></i>
+                3-20 characters, letters, numbers, and underscores only
+              </small>
+            </div>
+
+            <!-- Email Field -->
+            <div class="mb-3">
+              <label for="email" class="form-label fw-semibold">
+                <i class="bi bi-envelope me-1"></i> Email Address
+              </label>
+              <div class="input-group">
+                <span class="input-group-text bg-light">
+                  <i class="bi bi-envelope-fill"></i>
+                </span>
+                <input
+                  type="email"
+                  id="email"
+                  formControlName="email"
+                  class="form-control"
+                  placeholder="Enter your email"
+                  [class.is-invalid]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
+                >
+              </div>
+              <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" 
+                   class="invalid-feedback d-block">
+                {{ getErrorMessage('email') }}
+              </div>
+            </div>
+
+            <!-- Password Field -->
+            <div class="mb-3">
+              <label for="password" class="form-label fw-semibold">
+                <i class="bi bi-key me-1"></i> Password
+              </label>
+              <div class="input-group">
+                <span class="input-group-text bg-light">
+                  <i class="bi bi-shield-lock"></i>
+                </span>
+                <input
+                  [type]="showPassword ? 'text' : 'password'"
+                  id="password"
+                  formControlName="password"
+                  class="form-control"
+                  placeholder="Create a password"
+                  [class.is-invalid]="(registerForm.get('password')?.invalid || registerForm.get('confirmPassword')?.errors?.['passwordMismatch']) && registerForm.get('password')?.touched"
+                >
+                <button
+                  class="btn btn-outline-secondary"
+                  type="button"
+                  (click)="togglePasswordVisibility()"
+                >
+                  <i class="bi" [class.bi-eye]="!showPassword" [class.bi-eye-slash]="showPassword"></i>
+                </button>
+              </div>
+              
+              <!-- Password Strength Meter -->
+              <div *ngIf="registerForm.get('password')?.value" class="mt-2">
+                <div class="d-flex justify-content-between mb-1">
+                  <span class="small">Password Strength:</span>
+                  <span class="small fw-bold" [ngClass]="{
+                    'text-danger': passwordStrength.score <= 2,
+                    'text-warning': passwordStrength.score === 3,
+                    'text-info': passwordStrength.score === 4,
+                    'text-success': passwordStrength.score === 5
+                  }">
+                    {{ getPasswordStrengthLabel() }}
+                  </span>
+                </div>
+                <div class="progress" style="height: 8px;">
+                  <div 
+                    class="progress-bar" 
+                    [ngClass]="getPasswordStrengthColor()"
+                    [style.width.%]="(passwordStrength.score / 5) * 100"
+                    role="progressbar">
+                  </div>
+                </div>
+                
+                <!-- Password Requirements -->
+                <div class="password-requirements mt-2">
+                  <div class="row g-2 small">
+                    <div class="col-6">
+                      <span [class.text-success]="passwordStrength.hasLength" [class.text-danger]="!passwordStrength.hasLength">
+                        <i class="bi" [class.bi-check-circle-fill]="passwordStrength.hasLength" [class.bi-x-circle-fill]="!passwordStrength.hasLength"></i>
+                        Min 8 characters
+                      </span>
+                    </div>
+                    <div class="col-6">
+                      <span [class.text-success]="passwordStrength.hasUpperCase" [class.text-danger]="!passwordStrength.hasUpperCase">
+                        <i class="bi" [class.bi-check-circle-fill]="passwordStrength.hasUpperCase" [class.bi-x-circle-fill]="!passwordStrength.hasUpperCase"></i>
+                        Uppercase letter
+                      </span>
+                    </div>
+                    <div class="col-6">
+                      <span [class.text-success]="passwordStrength.hasLowerCase" [class.text-danger]="!passwordStrength.hasLowerCase">
+                        <i class="bi" [class.bi-check-circle-fill]="passwordStrength.hasLowerCase" [class.bi-x-circle-fill]="!passwordStrength.hasLowerCase"></i>
+                        Lowercase letter
+                      </span>
+                    </div>
+                    <div class="col-6">
+                      <span [class.text-success]="passwordStrength.hasNumber" [class.text-danger]="!passwordStrength.hasNumber">
+                        <i class="bi" [class.bi-check-circle-fill]="passwordStrength.hasNumber" [class.bi-x-circle-fill]="!passwordStrength.hasNumber"></i>
+                        Number
+                      </span>
+                    </div>
+                    <div class="col-6">
+                      <span [class.text-success]="passwordStrength.hasSpecialChar" [class.text-danger]="!passwordStrength.hasSpecialChar">
+                        <i class="bi" [class.bi-check-circle-fill]="passwordStrength.hasSpecialChar" [class.bi-x-circle-fill]="!passwordStrength.hasSpecialChar"></i>
+                        Special character (@$!%*?&)
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div *ngIf="registerForm.get('password')?.errors?.['pattern'] && registerForm.get('password')?.touched" 
+                   class="text-danger small mt-1">
+                {{ getErrorMessage('password') }}
+              </div>
+            </div>
+
+            <!-- Confirm Password Field -->
+            <div class="mb-3">
+              <label for="confirmPassword" class="form-label fw-semibold">
+                <i class="bi bi-key-fill me-1"></i> Confirm Password
+              </label>
+              <div class="input-group">
+                <span class="input-group-text bg-light">
+                  <i class="bi bi-shield-check"></i>
+                </span>
+                <input
+                  [type]="showConfirmPassword ? 'text' : 'password'"
+                  id="confirmPassword"
+                  formControlName="confirmPassword"
+                  class="form-control"
+                  placeholder="Confirm your password"
+                  [class.is-invalid]="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched || registerForm.errors?.['passwordMismatch']"
+                >
+                <button
+                  class="btn btn-outline-secondary"
+                  type="button"
+                  (click)="toggleConfirmPasswordVisibility()"
+                >
+                  <i class="bi" [class.bi-eye]="!showConfirmPassword" [class.bi-eye-slash]="showConfirmPassword"></i>
+                </button>
+              </div>
+              <div *ngIf="registerForm.get('confirmPassword')?.touched">
+                <div *ngIf="registerForm.get('confirmPassword')?.errors?.['required']" 
+                     class="invalid-feedback d-block">
+                  Please confirm your password
+                </div>
+                <div *ngIf="registerForm.errors?.['passwordMismatch']" 
+                     class="invalid-feedback d-block">
+                  Passwords do not match
+                </div>
+              </div>
+            </div>
+
+            <!-- Terms and Conditions -->
+            <div class="mb-4">
+              <div class="form-check">
+                <input 
+                  type="checkbox" 
+                  class="form-check-input" 
+                  id="agreeTerms" 
+                  formControlName="agreeTerms"
+                  [class.is-invalid]="registerForm.get('agreeTerms')?.invalid && registerForm.get('agreeTerms')?.touched"
+                >
+                <label class="form-check-label" for="agreeTerms">
+                  I agree to the 
+                  <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#termsModal">
+                    Terms and Conditions
+                  </a>
+                  and 
+                  <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#privacyModal">
+                    Privacy Policy
+                  </a>
+                </label>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="d-grid gap-2">
+              <button
+                type="submit"
+                class="btn btn-success btn-lg"
+                [disabled]="registerForm.invalid || isLoading"
+              >
+                <span *ngIf="!isLoading">
+                  <i class="bi bi-check-circle me-2"></i> Create Account
+                </span>
+                <span *ngIf="isLoading">
+                  <span class="spinner-border spinner-border-sm me-2"></span>
+                  Creating Account...
+                </span>
+              </button>
+            </div>
+
+            <!-- Divider -->
+            <div class="divider my-4">
+              <span class="divider-text bg-white px-3 text-muted">OR</span>
+            </div>
+
+            <!-- Social Registration -->
+            <div class="social-registration">
+              <p class="text-center text-muted small mb-3">Sign up with</p>
+              <div class="d-flex justify-content-center gap-2">
+                <button type="button" class="btn btn-outline-danger" disabled>
+                  <i class="bi bi-google me-2"></i> Google
+                </button>
+                <button type="button" class="btn btn-outline-primary" disabled>
+                  <i class="bi bi-facebook me-2"></i> Facebook
+                </button>
+                <button type="button" class="btn btn-outline-dark" disabled>
+                  <i class="bi bi-github me-2"></i> GitHub
+                </button>
+              </div>
+              <p class="text-center text-muted small mt-2">
+                <i class="bi bi-exclamation-triangle me-1"></i>
+                Social login coming soon
+              </p>
+            </div>
+          </form>
+
+          <!-- Login Link -->
+          <div class="text-center mt-4">
+            <p class="mb-0">
+              Already have an account?
+              <a routerLink="/login" class="text-decoration-none fw-semibold text-success">
+                Sign in here
+              </a>
+            </p>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="card-footer text-center py-3 bg-light">
+          <small class="text-muted">
+            <i class="bi bi-shield-check me-1"></i>
+            Your information is secure and encrypted
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Terms and Conditions Modal -->
+<div class="modal fade" id="termsModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">
+          <i class="bi bi-file-text me-2"></i> Terms and Conditions
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <h6>1. Acceptance of Terms</h6>
+        <p>By accessing and using this Multi-Level User Management System, you accept and agree to be bound by the terms and provision of this agreement.</p>
+        
+        <h6>2. User Responsibilities</h6>
+        <p>You are responsible for maintaining the confidentiality of your account and password. You agree to accept responsibility for all activities that occur under your account.</p>
+        
+        <h6>3. Multi-Level Structure</h6>
+        <p>Users can only create next-level users. You are responsible for users you directly invite to the system.</p>
+        
+        <h6>4. Balance and Transactions</h6>
+        <p>All balance transfers must comply with the system rules. Fraudulent activities will result in immediate account termination.</p>
+        
+        <h6>5. Privacy</h6>
+        <p>Your privacy is important to us. We do not share your personal information with third parties without your consent.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">I Agree</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Privacy Policy Modal -->
+<div class="modal fade" id="privacyModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-info text-white">
+        <h5 class="modal-title">
+          <i class="bi bi-shield-lock me-2"></i> Privacy Policy
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <h6>Information We Collect</h6>
+        <p>We collect information you provide directly to us, such as when you create an account, update your profile, or make transactions.</p>
+        
+        <h6>How We Use Your Information</h6>
+        <p>We use the information we collect to provide, maintain, and improve our services, to process transactions, and to communicate with you.</p>
+        
+        <h6>Information Sharing</h6>
+        <p>We do not share your personal information with companies, organizations, or individuals outside of our system except with your consent.</p>
+        
+        <h6>Data Security</h6>
+        <p>We work hard to protect your information using encryption, secure servers, and regular security audits.</p>
+        
+        <h6>Your Rights</h6>
+        <p>You have the right to access, update, or delete your personal information at any time through your account settings.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-info" data-bs-dismiss="modal">I Understand</button>
+      </div>
+    </div>
+  </div>
+</div>
